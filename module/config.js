@@ -4,6 +4,7 @@ layui.define(function (exports) {
         base_server: 'json/', // 接口地址，实际项目请换成http形式的地址
         tableName: 'easyweb',  // 存储表名
         autoRender: false,  // 窗口大小改变后是否自动重新渲染表格，解决layui数据表格非响应式的问题
+        pageTabs: true,   // 是否开启多标签
         // 获取缓存的token
         getToken: function () {
             var t = layui.data(config.tableName).token;

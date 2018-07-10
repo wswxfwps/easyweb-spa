@@ -6,20 +6,6 @@ layui.define(['config', 'layer', 'element', 'form'], function (exports) {
     var popupRightIndex, popupCenterIndex, popupCenterParam;
 
     var admin = {
-        // 路由加载组件
-        loadView: function (path) {
-            admin.showLoading('.layui-layout-admin .layui-body');
-            $('.layui-layout-admin .layui-body').load(path, function () {
-                element.render('breadcrumb');
-                form.render('select');
-                admin.removeLoading('.layui-layout-admin .layui-body');
-            });
-            admin.activeNav(Q.lash);
-            // 移动设备切换页面隐藏侧导航
-            if (document.body.clientWidth <= 750) {
-                admin.flexible(true);
-            }
-        },
         // 设置侧栏折叠
         flexible: function (expand) {
             var isExapnd = $('.layui-layout-admin').hasClass('admin-nav-mini');

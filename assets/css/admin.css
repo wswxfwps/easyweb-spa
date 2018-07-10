@@ -148,9 +148,14 @@ html {
 .layui-layout-admin .layui-body {
     left: 220px;
     top: 50px;
-    padding: 0;
+    padding: 15px;
     transition: all .3s;
-    /*overflow-y: scroll;*/
+    overflow-y: scroll;
+}
+
+.layui-layout-admin .layui-body.open-tab {
+    padding: 0;
+    overflow-y: hidden;
 }
 
 /** //主体部分样式结束 */

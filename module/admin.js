@@ -6,6 +6,7 @@ layui.define(['config', 'layer', 'element', 'form'], function (exports) {
     var popupRightIndex, popupCenterIndex, popupCenterParam;
 
     var admin = {
+        refresh: false,
         // 设置侧栏折叠
         flexible: function (expand) {
             var isExapnd = $('.layui-layout-admin').hasClass('admin-nav-mini');
@@ -185,6 +186,7 @@ layui.define(['config', 'layer', 'element', 'form'], function (exports) {
             admin.flexible(expand);
         },
         refresh: function () {  // 刷新主体部分
+            admin.refresh = true;
             Q.refresh();
         },
         back: function () {  //后退

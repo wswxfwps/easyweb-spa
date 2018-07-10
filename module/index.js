@@ -108,8 +108,9 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 contentDom = '#' + menuId;
                 element.tabChange('admin-pagetabs', menuId);
             }
-            if (!flag) {
+            if (!flag || admin.refresh) {
                 $(contentDom).load(menuPath, function () {
+                    admin.refresh = false;
                     element.render('breadcrumb');
                     form.render('select');
                     admin.removeLoading('.layui-layout-admin .layui-body');
@@ -170,6 +171,8 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
         });
         $('#console').load('components/console.html', function () {
         });
+    } else {
+        $('.layui-layout-admin .layui-body').removeClass('open-tab');
     }
     // tab选项卡切换监听
     element.on('tab(admin-pagetabs)', function (data) {

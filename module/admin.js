@@ -247,6 +247,22 @@ layui.define(['config', 'layer'], function (exports) {
         // 右滑动tab
         rightPage: function () {
             admin.rollPage();
+        },
+        // 关闭当前选项卡
+        closeThisTabs: function () {
+            var $title = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+            if ($title.find('li').first().hasClass('layui-this')) {
+                return;
+            }
+            $title.find('li.layui-this').find(".layui-tab-close").trigger("click");
+        },
+        // 关闭其他选项卡
+        closeOtherTabs: function () {
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0):not(.layui-this)').find(".layui-tab-close").trigger("click");
+        },
+        // 关闭所有选项卡
+        closeAllTabs: function () {
+            $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".layui-tab-close").trigger("click");
         }
     };
 

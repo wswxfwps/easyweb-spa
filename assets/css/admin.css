@@ -65,7 +65,7 @@ html {
 /** logo部分样式 */
 .layui-layout-admin .layui-header .layui-logo {
     width: 220px;
-    background-color: #002140;
+    background-color: #001529;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .15);
     color: #eee;
     font-size: 16px;
@@ -149,13 +149,8 @@ html {
     left: 220px;
     top: 50px;
     padding: 15px;
-    transition: all .3s;
+    transition: left .3s;
     overflow-y: scroll;
-}
-
-.layui-layout-admin .layui-body.open-tab {
-    padding: 0;
-    overflow-y: hidden;
 }
 
 /** //主体部分样式结束 */
@@ -263,7 +258,6 @@ html {
         width: 220px;
         left: 0;
         z-index: 10001;
-        background-color: #001529;
     }
 
     .layui-layout-admin.admin-nav-mini .layui-header {
@@ -530,12 +524,29 @@ html {
 }
 
 /** admin选项卡样式 */
-.layui-body .layui-tab {
-    margin: 0;
-    overflow: hidden
+/** 调整header阴影 */
+.layui-layout-admin.open-tab .layui-header {
+    box-shadow: 0 1px 1px 0 rgba(0, 21, 41, .05);
 }
 
-.layui-body .layui-tab .layui-tab-content {
+/** 开启选项卡让去除body的内边距 */
+.layui-layout-admin.open-tab .layui-body {
+    padding: 0;
+    overflow-y: hidden;
+}
+
+.layui-layout-admin.open-tab .layui-body .layui-tab {
+    visibility: visible; /** 开启选项卡才让tab可见 */
+}
+
+.layui-layout-admin .layui-body .layui-tab {
+    margin: 0;
+    overflow: hidden;
+    visibility: hidden; /** 默认隐藏tab */
+}
+
+/** 开启选项卡后让tab-content样式为以前的layui-body样式 */
+.layui-layout-admin .layui-body .layui-tab .layui-tab-content {
     position: absolute;
     bottom: 0;
     overflow-y: scroll;
@@ -545,7 +556,8 @@ html {
     left: 0;
 }
 
-.layui-body .layui-tab .layui-tab-title {
+/** 选项卡标题样式 */
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title {
     height: 40px;
     line-height: 40px;
     padding: 0 80px 0 40px;
@@ -558,29 +570,38 @@ html {
     overflow: hidden;
 }
 
-.layui-body .layui-tab .layui-tab-title li {
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title::-webkit-scrollbar {
+    display: none;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li {
     min-width: 0;
     line-height: 40px;
     max-width: 160px;
     text-overflow: ellipsis;
     overflow: hidden;
     border-right: 1px solid #f6f6f6;
-    vertical-align: top
+    vertical-align: top;
 }
 
-.layui-body .layui-tab .layui-tab-title li.layui-this,
-.layui-body .layui-tab .layui-tab-title li:hover {
-    background-color: #f6f6f6
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title .layui-tab-bar {
+    display: none;
 }
 
-.layui-body .layui-tab .layui-tab-title li.layui-this:after {
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this,
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:hover {
+    background-color: #f6f6f6;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li.layui-this:after {
     width: 100%;
     border: none;
     height: 2px;
     background-color: #292B34
 }
 
-.layui-body .layui-tab .layui-tab-title li .layui-tab-close {
+/** tab关闭按钮样式 */
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li .layui-tab-close {
     width: 16px;
     height: 16px;
     line-height: 16px;
@@ -588,11 +609,12 @@ html {
     font-size: 12px;
 }
 
-.layui-body .layui-tab .layui-tab-title li:first-child .layui-tab-close {
-    display: none;
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:first-child .layui-tab-close {
+    display: none; /** 第一个选项卡不可关闭 */
 }
 
-.layui-body .admin-tabs-control {
+/** 选项卡其他操作按钮样式 */
+.layui-layout-admin .layui-body .admin-tabs-control {
     position: absolute;
     top: 0;
     width: 40px;
@@ -604,23 +626,29 @@ html {
     box-sizing: border-box;
     border-left: 1px solid #f6f6f6;
     z-index: 1000;
+    visibility: hidden; /** 默认隐藏 */
+    background-color: white;
 }
 
-.layui-body .admin-tabs-control:hover {
+.layui-layout-admin.open-tab .layui-body .admin-tabs-control {
+    visibility: visible;
+}
+
+.layui-layout-admin .layui-body .admin-tabs-control:hover {
     background-color: #f6f6f6
 }
 
-.layui-body .layui-icon-prev {
+.layui-layout-admin .layui-body .layui-icon-prev {
     left: 0;
     border-left: none;
     border-right: 1px solid #f6f6f6;
 }
 
-.layui-body .layui-icon-next {
+.layui-layout-admin .layui-body .layui-icon-next {
     right: 40px;
 }
 
-.layui-body .layui-icon-down {
+.layui-layout-admin .layui-body .layui-icon-down {
     right: 0;
 }
 
@@ -658,6 +686,6 @@ html {
     color: #333
 }
 
-.admin-tabs-select.layui-nav .layui-nav-bar, .admin-tabs-select.layui-nav .layui-nav-bar .layui-nav-more {
+.admin-tabs-select.layui-nav .layui-nav-bar, .admin-tabs-select.layui-nav .layui-nav-more {
     display: none;
 }

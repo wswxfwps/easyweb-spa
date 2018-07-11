@@ -1,8 +1,6 @@
-layui.define(['config', 'layer', 'element', 'form'], function (exports) {
+layui.define(['config', 'layer'], function (exports) {
     var config = layui.config;
     var layer = layui.layer;
-    var element = layui.element;
-    var form = layui.form;
     var popupRightIndex, popupCenterIndex, popupCenterParam;
 
     var admin = {
@@ -176,6 +174,27 @@ layui.define(['config', 'layer', 'element', 'form'], function (exports) {
         // 获取缓存临时数据
         getTempData: function (key) {
             return layui.sessionData('tempData')[key];
+        },
+        // 滑动选项卡
+        rollPage: function (d) {
+            var $tabTitle = $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title');
+            var left = $tabTitle.scrollLeft();
+            if ('left' === d) {
+                $tabTitle.scrollLeft(left - 120);
+            } else if ('auto' === d) {
+                var autoLeft = 0;
+                $tabTitle.children("li").each(function () {
+                    if ($(this).hasClass('layui-this')) {
+                        return false;
+                    } else {
+                        autoLeft += $(this).outerWidth();
+                    }
+                });
+                console.log(autoLeft);
+                $tabTitle.scrollLeft(autoLeft - 47);
+            } else {
+                $tabTitle.scrollLeft(left + 120);
+            }
         }
     };
 
@@ -220,6 +239,14 @@ layui.define(['config', 'layer', 'element', 'form'], function (exports) {
                 }
                 ti.addClass(ic).removeClass(ac);
             }
+        },
+        // 左滑动tab
+        leftPage: function () {
+            admin.rollPage("left");
+        },
+        // 右滑动tab
+        rightPage: function () {
+            admin.rollPage();
         }
     };
 

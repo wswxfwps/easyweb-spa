@@ -65,5 +65,3 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 
 ### 我要打赏：
 都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！
-
-![赞赏码](https://ws1.sinaimg.cn/large/88052d6bgy1fsvn3kbkrjj20go06e40f.jpg)

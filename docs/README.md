@@ -779,6 +779,4 @@ jquery打造的mvvm框架，还提供了类似vue组件的写法。
 ![群二维码](https://ws1.sinaimg.cn/large/006a7GCKgy1fstbxycj1xj305k07m75h.jpg)
 
 ### 6.2.我要打赏
-都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！
-
-![赞赏码](https://ws1.sinaimg.cn/large/88052d6bgy1fsvn3kbkrjj20go06e40f.jpg)
+都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！码云已开启捐赠功能，谢谢支持！

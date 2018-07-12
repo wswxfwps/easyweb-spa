@@ -73,6 +73,9 @@
             return;
         }
 
+        // 检查多标签功能是否开启
+        index.checkPageTabs();
+
         // 获取当前用户信息
         index.getUser(function (user) {
             $('.layui-layout-admin .layui-header').vm(user);

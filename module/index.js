@@ -109,9 +109,9 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 element.tabChange('admin-pagetabs', menuId);
                 admin.rollPage('auto');
             }
-            if (!flag || admin.refresh) {
+            if (!flag || admin.isRefresh) {
                 $(contentDom).load(menuPath, function () {
-                    admin.refresh = false;
+                    admin.isRefresh = false;
                     element.render('breadcrumb');
                     form.render('select');
                     admin.removeLoading('.layui-layout-admin .layui-body');
@@ -160,22 +160,25 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             $('#btnMessage').click(function () {
                 admin.popupRight('components/tpl/message.html');
             });
+        },
+        // 检查多标签功能是否开启
+        checkPageTabs: function () {
+            // 加载主页
+            if (config.pageTabs) {
+                $('.layui-layout-admin').addClass('open-tab');
+                element.tabAdd('admin-pagetabs', {
+                    title: '<i class="layui-icon layui-icon-home"></i>',
+                    content: '<div id="console"></div>',
+                    id: 'console'
+                });
+                $('#console').load('components/console.html', function () {
+                });
+            } else {
+                $('.layui-layout-admin').removeClass('open-tab');
+            }
         }
     };
 
-    // 加载主页
-    if (config.pageTabs) {
-        $('.layui-layout-admin').addClass('open-tab');
-        element.tabAdd('admin-pagetabs', {
-            title: '<i class="layui-icon layui-icon-home"></i>',
-            content: '<div id="console"></div>',
-            id: 'console'
-        });
-        $('#console').load('components/console.html', function () {
-        });
-    } else {
-        $('.layui-layout-admin').removeClass('open-tab');
-    }
     // tab选项卡切换监听
     element.on('tab(admin-pagetabs)', function (data) {
         var layId = $(this).attr('lay-id');

@@ -49,7 +49,15 @@
 
 <body>
 <div style="margin: 0 auto; max-width: 800px;padding: 20px;">
-    <h2 style="text-align: center;margin-bottom: 40px;margin-top: 30px;">EasyWeb主题生成器</h2>
+    <h2 style="text-align: center;margin-bottom: 25px;margin-top: 30px;">EasyWeb主题生成器</h2>
+    <div class="layui-form" style="margin-bottom: 15px;text-align: right">
+        <div class="layui-inline">
+            <label class="layui-form-label">验证颜色：</label>
+            <div class="layui-input-inline" id="yxys">
+                <input type="checkbox" name="yyy" lay-skin="switch" lay-text="ON|OFF" lay-filter="ck-yz" checked>
+            </div>
+        </div>
+    </div>
     <div class="layui-form layui-form-pane">
         <div class="layui-form-item">
             <label class="layui-form-label">logo背景颜色</label>
@@ -104,17 +112,15 @@
             </button>
         </div>
     </div>
+    <hr>
+    <h2 style="margin-top: 20px;margin-bottom: 15px;">生成结果</h2>
     <pre class="layui-code" id="tv-rs" lay-title="theme.css"></pre>
 
     <hr>
 
     <h2 style="margin-top: 20px;margin-bottom: 15px;">使用方法</h2>
     <p>将下载好的css放在项目里面，然后打开index.html，引入下载的css即可生效，如果样式有生成的不全的，请联系作者增加：</p>
-    <pre class="layui-code" lay-title="index.html" lay-encode="true">
-<link rel="stylesheet" href="assets/css/admin.css"/>
-        <!-- 引入下载的css，放在admin.css之后，建议放在所有css之后 -->
-<link rel="stylesheet" href="assets/css/theme.css"/>
-    </pre>
+    <pre class="layui-code" id="tv-jc" lay-title="index.html" lay-encode="true"></pre>
 
     <div class="login-footer">
         <p>© 2018 <a href="javascript:;" target="_blank">EasyWeb版权所有</a></p>
@@ -131,9 +137,16 @@
 <script type="text/javascript" src="FileSaver.min.js"></script>
 
 <script>
-    layui.use(['element', 'form', 'code'], function () {
+    layui.use(['element', 'form', 'code', 'util', 'layer'], function () {
         var element = layui.element;
         var form = layui.form;
+        var util = layui.util;
+        var layer = layui.layer;
+        var isVer = true;
+
+        $('#tv-jc').text('<link rel="stylesheet" href="assets/css/admin.css"/>\n' +
+            '<!-- 引入下载的css，放在admin.css之后，建议放在所有css之后 -->\n' +
+            '<link rel="stylesheet" href="assets/css/theme.css"/>');
         layui.code({about: false});
         $('#btn-down').hide();
 
@@ -142,7 +155,7 @@
         form.on('submit(form-sub)', function (data) {
             for (var key in data.field) {
                 var colorValue = data.field[key];
-                if (/^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
+                if (!isVer || /^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
                     tpl = tpl.replace(new RegExp('{{' + key + '}}', 'gm'), colorValue);
                     layer.msg('生成完成', {icon: 6});
                     $('#btn-down').show();
@@ -163,7 +176,7 @@
 
         $(".layui-form input[type='text']").on('input', function () {
             var colorValue = $(this).val();
-            if (/^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
+            if (!isVer || /^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
                 $(this).parent().find('.color-demo').css('background-color', colorValue);
             } else {
                 $(this).parent().find('.color-demo').css('background-color', '#FBFBFB');
@@ -176,6 +189,19 @@
         });
 
         $(".layui-form input[type='text']").trigger('input');
+
+        //固定Bar
+        util.fixbar({bgcolor: '#009688'});
+
+        form.on('switch(ck-yz)', function (data) {
+            isVer = data.elem.checked;
+        });
+
+        $('#yxys').hover(function () {
+            layer.tips('目前只校验16进制颜色值，如需rgb颜色，请关闭校验！', this, {tips: [1, '#344058']});
+        }, function () {
+            layer.closeAll('tips');
+        });
     });
 </script>
 </body>

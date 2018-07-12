@@ -4,7 +4,7 @@ layui.define(['config', 'layer'], function (exports) {
     var popupRightIndex, popupCenterIndex, popupCenterParam;
 
     var admin = {
-        refresh: false,
+        isRefresh: false,
         // 设置侧栏折叠
         flexible: function (expand) {
             var isExapnd = $('.layui-layout-admin').hasClass('admin-nav-mini');
@@ -190,11 +190,15 @@ layui.define(['config', 'layer'], function (exports) {
                         autoLeft += $(this).outerWidth();
                     }
                 });
-                console.log(autoLeft);
+                // console.log(autoLeft);
                 $tabTitle.scrollLeft(autoLeft - 47);
             } else {
                 $tabTitle.scrollLeft(left + 120);
             }
+        },
+        refresh: function () {
+            admin.isRefresh = true;
+            Q.refresh();
         }
     };
 
@@ -205,8 +209,7 @@ layui.define(['config', 'layer'], function (exports) {
             admin.flexible(expand);
         },
         refresh: function () {  // 刷新主体部分
-            admin.refresh = true;
-            Q.refresh();
+            admin.refresh();
         },
         back: function () {  //后退
             history.back();

@@ -199,6 +199,7 @@ admin提供的默认事件也就生效了。
 :---|:--- |:--- 
 base_server | 变量 | 服务器接口地址
 tableName | 变量 | 本地存储表名（token等都会存储在本地中）
+pageTabs | 变量 | 是否开启多标签模式
 getToken | 方法 | 获取缓存的token
 putToken | 方法 | 缓存token
 removeToken | 方法 | 清除缓存的token
@@ -240,7 +241,7 @@ menus: [{
             icon: 'layui-icon-home',
             subMenus: [{
                 name: '主页一',
-                url: 'console',
+                url: '#!console',
                 path: 'console.html'
             }]
         }, {
@@ -248,18 +249,20 @@ menus: [{
             icon: 'layui-icon-set',
             subMenus: [{
                 name: '用户管理',
-                url: 'user',  // 这里url不能带斜杠
+                url: '#!user',  // 这里url不能带斜杠
                 path: 'system/user.html',
                 auth: 'post:/user/query'
             }, {
                 name: '角色管理',
-                url: 'role',
+                url: '#!role',
                 path: 'system/role.html',
                 auth: 'get:/role'
             }]
         }]
 ```
-&emsp;&emsp;index.js里面会自动使用menus数组渲染左侧导航栏，并且会使用url作为关键字自动注册路由监听。 
+&emsp;&emsp;index.js里面会自动使用menus数组渲染左侧导航栏，并且会使用url作为关键字自动注册路由监听。
+目前只设定了最多支持三菜单，原因是因为模板引擎渲染无法使用递归，所以写了三层循环，如果你需要更多级的菜单，
+继续加循环就可以了，主要是因为无法递归，并不是无法做到无限级。 
 
 - `path` 表示html所在的路径，会在components目录下面寻找
 - `url` 是路由的关键字，也就是说点击这个菜单，浏览器地址栏的url会变成`/#!xxx`
@@ -287,6 +290,11 @@ refresh | 刷新主体部分
 back | 浏览器后退
 theme | 打开主题设置弹窗 
 fullScreen | 全屏切换
+leftPage | 左滚动选项卡
+rightPage | 右滚动选项卡
+closeThisTabs | 关闭当前选项卡
+closeOtherTabs | 关闭其他选项卡
+closeAllTabs | 关闭全部选项卡
 
 #### 3.4.2.admin提供的方法
 使用示例：
@@ -304,6 +312,7 @@ layui.use(['admin'], function () {
 :---|:--- |:--- 
 flexible(expand) | true和false | 折叠侧导航 
 activeNav(url) | a标签里面的href值 | 设置侧导航栏选中
+refresh() | 无 | 刷新主体部分
 popupRight(path) | html地址 | 右侧弹出弹窗
 closePopupRight() | 无 | 关闭右侧弹出
 popupCenter(object) | 见单独说明 | 中间弹出弹窗
@@ -313,6 +322,7 @@ req(url, data, success, method) | 见单独说明 | 封装的ajax请求
 hasPerm(auth) | 权限标识 | 判断用户是否有权限
 putTempData(key, value) | key,value | 缓存临时数据
 getTempData(key,) | key | 获取缓存的临时数据
+rollPage(d) | 方向 | 滚动选项卡tab
 
 ##### 3.4.2.1.右侧弹出弹窗popupRight
 使用示例：
@@ -559,9 +569,37 @@ console.log(tName);
 </script>
 ```
 
-### 3.5.admin提供的css公共类
+##### 3.4.2.6 滚动选项卡 rollPage
+使用示例：
+```javascript
+// 向左滚动
+admin.rollPage('left');
 
-#### 3.5.1.辅助类
+// 滚动到当前选中的选项卡
+admin.rollPage('auto');
+
+// 向右滚动
+admin.rollPage();
+```
+参数说明：
+- left - 向左滚动
+- auto - 滚动到当前选项卡
+- 其他 - 向右滚动，不写参数就是向右滚动
+
+
+
+### 3.5.index模块介绍
+
+&emsp;&emsp;index模块不像admin一样，提供一些封装的方法供其他页面使用，index模块里面的一些方法主要是用于加载index.html的
+header、side等，获取用户的信息，判断是否开启选项卡改变页面局部等操作，说白了就是用来初始化后台布局的，用于给主体部分的界面
+做准备，所以这里就不一一将index.js里面的方法了，虽然index.js里面代码行数也不少，但是仔细看就能看懂，注释也都写了，如果你需要
+微微修改阅读几遍就可以上手修改了。
+
+
+
+### 3.6.admin提供的css公共类
+
+#### 3.6.1.辅助类
 
 类名（class） | 说明
 :---|:--- 
@@ -608,7 +646,7 @@ inline-block | 设置元素display为inline-block
 ```
 
 
-#### 3.5.2.表格上方的工具栏
+#### 3.6.2.表格上方的工具栏
 
 类名（class） | 说明
 :---|:--- 
@@ -640,7 +678,7 @@ toolbar | 表格上方工具栏样式
 ![](https://ws1.sinaimg.cn/large/006a7GCKgy1fswqb6x89hj30mz098dg2.jpg)
 
 
-#### 3.5.3.弹窗里面的表单
+#### 3.6.3.弹窗里面的表单
 
 类名（class） | 说明
 :---|:--- 
@@ -685,14 +723,14 @@ model-form-footer | 弹窗里面表单底部操作按钮容器的样式
 ![](https://ws1.sinaimg.cn/large/006a7GCKgy1fswqdrhhpvj30h30cnweo.jpg)
 
 
-#### 3.5.4.admin.css可用于任何layui后台大布局
+#### 3.6.4.admin.css可用于任何layui后台大布局
 &emsp;&emsp;EasyWeb完全基于layui的后台大布局进行样式修改，html结构是完全基于layui的后台大布局的，所以项目里面的
-admin.css你可以用于任何layui后台大布局的页面，加入之后你的页面就得到EasyWeb的样式了，不信现在就去试试！ 但是侧导航栏
+admin.css你可以用于任何layui后台大布局的页面，加入之后你的页面就得到EasyWeb的样式了， 但是侧导航栏
 的折叠事件、全屏等事件是写在admin.js里面的，所以建议你直接使用EasyWeb的框架，当然如果你有自己的基于layui后台
 大布局的框架，完全可以使用我的admin.css。
 
 
-### 3.6.鼠标经过自动弹出tips层
+### 3.7.鼠标经过自动弹出tips层
 使用示例：
 ```html
 <button class="layui-btn" lay-tips="大家好！">按钮</button>
@@ -714,7 +752,7 @@ admin.css你可以用于任何layui后台大布局的页面，加入之后你的
 ![](https://ws1.sinaimg.cn/large/006a7GCKgy1fsxm581mpxj309405pa9x.jpg)
 
 
-### 3.7.路由的使用
+### 3.8.路由的使用
 &emsp;&emsp;路由这里使用的是Q.js框架，如果你的左侧菜单是配置在config.menus里面的话，不需要自己注册路由监听，
 index.js里面会自动帮你注册。
 
@@ -725,23 +763,21 @@ index.js里面会自动帮你注册。
 q.js框架出来新版本了，请联系我进行替换，请多多包含，不要嫌麻烦，以免出问题。
 
 
-### 3.8.mvvm数据绑定、组件等
+### 3.9.mvvm数据绑定、组件等
 &emsp;&emsp;虽然现在vue很流行，但是jquery的许多方法仍然很好用，所以现在很多项目里面既有vue，又有jquery，
 然而对于开发一个后台管理系统来说，我们仅仅用了vue的数据渲染功能，大部分还是用的jquery的代码，这样一来项目
 就显得有点不伦不类了。
 
 &emsp;&emsp;但是对于前后端分离来说，mvvm的框架渲染数据确实很方便，很强大，layui虽然提供了模板引擎，
-但是写法太别扭了，还麻烦，还好我翻遍github、gitee，终于找到了一个牛B哄哄的框架pandyle.js，一个为
-jquery打造的mvvm框架，还提供了类似vue组件的写法。
+但是写法别扭，还麻烦，pandyle.js是一个为jquery打造的mvvm框架，还提供了类似vue组件的写法。
 
-&emsp;&emsp;EasyWeb里面的头部header、side等都是使用的它的组件的写法，还有一些下拉框select的渲染也是用的它提供的mvvm的写法，
-确实比layui的模板引擎要好用多了，模板引擎这几个字真是听的牛B哄哄，用起来很一般啊。
+&emsp;&emsp;EasyWeb里面的头部header、side等都是使用的它的组件的写法，还有一些下拉框select的渲染也是用的它提供的mvvm的写法。
 
 &emsp;&emsp;我这里就不提供pandyle.js的用法了，以免跟不上pandyle作者的更新脚步，
 大家可以到这里[pandyle.js](https://gitee.com/pandarrr/pandyle)查看pandyle的开发文档。
 
 
-### 3.9.主题功能
+### 3.10.主题功能
 &emsp;&emsp;EasyWeb包含前后台，所以开发时间比较紧张，暂时不提供自由切换主题的功能，但是提供了一个主题生成器，
 如果你想改变EasyWeb的默认主题，请使用主题生成器：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)
 
@@ -762,21 +798,26 @@ jquery打造的mvvm框架，还提供了类似vue组件的写法。
 
 ## 5.更新日志
 
-**2018-06-28 - 发布全新2.0版本**
+- **2018-07-12 - 增加主题、多标签**
+    
+    - 增加多标签tab功能，并且增加自由切换是否开启多标签功能
+    - 增加主题切换功能，上线 [主题生成器](#_310主题功能) ，自由生成主题样式
+    
+- **2018-06-28 - 发布全新2.0版本**
 
-- 引入pandyle.js（mvvm框架），填补layui模板引擎的短板
-- 采用模块化开发方式，定义admin、config等公用模块，封装ajax请求
-- 界面优化，借鉴layadmin的设计风格，改版登录页面
+    - 引入pandyle.js（mvvm框架），填补layui模板引擎的短板
+    - 采用模块化开发方式，定义admin、config等公用模块，封装ajax请求
+    - 界面优化，借鉴layadmin的设计风格，改版登录页面
 
-**2018-02-11 - 发布EasyWeb1.0版本**
+- **2018-02-11 - 发布EasyWeb1.0版本**
 
-- 基于layui后台大布局、q.js路由框架搭建出第一个版本
+    - 基于layui后台大布局、q.js路由框架搭建出第一个版本
 
----
 
 ## 6.联系方式
 ### 6.1.欢迎加入“前后端分离技术交流群”
 ![群二维码](https://ws1.sinaimg.cn/large/006a7GCKgy1fstbxycj1xj305k07m75h.jpg)
 
 ### 6.2.我要打赏
-都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！码云已开启捐赠功能，谢谢支持！
+都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！
+[码云](https://gitee.com/whvse/EasyWebPage)已开启捐赠功能，谢谢支持！

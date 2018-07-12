@@ -11,6 +11,8 @@
 
 * 开发文档：[https://whvse.gitee.io/easywebpage/docs/](https://whvse.gitee.io/easywebpage/docs/)
 
+* [EasyWeb后台](https://gitee.com/whvse/EasyWeb)，后台基于springboot、Security、OAuth2等。
+
 ## 使用框架 
 
 描述 | 框架 

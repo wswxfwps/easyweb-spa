@@ -8,6 +8,8 @@
 * 演示地址：[https://whvse.gitee.io/easywebpage/](https://whvse.gitee.io/easywebpage/login.html)
 * 演示账号：随便输 &emsp;&emsp; 密码：随便输 
 
+> EasyWeb包含前后台，[前台](https://gitee.com/whvse/EasyWebPage)，[后台](https://gitee.com/whvse/EasyWeb)，后台基于springboot、Security、OAuth2等。
+
 
 ### 1.1.使用框架 
 

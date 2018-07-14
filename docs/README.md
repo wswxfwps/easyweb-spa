@@ -8,8 +8,9 @@
 * 演示地址：[https://whvse.gitee.io/easywebpage/](https://whvse.gitee.io/easywebpage/login.html)
 * 演示账号：随便输 &emsp;&emsp; 密码：随便输 
 
-> EasyWeb包含前后台，[前台](https://gitee.com/whvse/EasyWebPage)，[后台](https://gitee.com/whvse/EasyWeb)，后台基于springboot、Security、OAuth2等。
-
+&emsp;EasyWeb包含前后台，[前台地址](https://gitee.com/whvse/EasyWebPage)，[后台地址](https://gitee.com/whvse/EasyWeb)，
+后台基于springboot、Security、OAuth2等。 此文档包含分离和不分离版本的前端开发指南，两者的使用是有些区别的，
+不同的地方在文档中都着重指明了，参考文档使用即可。
 
 ### 1.1.使用框架 
 
@@ -61,6 +62,9 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 
 
 ### 2.2.添加一个业务界面
+
+> 注意：以下操作针对于分离版本，不分离版本菜单维护在数据库，页面由后台渲染，不需要前端有复杂的操作。
+
 比如你要做一个CMS系统，添加一个文章管理界面：
 
 - **第一步：<br>**
@@ -140,6 +144,9 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
    ![添加业务界面效果](https://ws1.sinaimg.cn/large/006a7GCKgy1fswpb4ieu3j30vo0i475m.jpg)
 
 ### 2.3.添加第三方layui扩展模块
+
+> 分离版本和不分离版本添加layui扩展模块都按如下方式来。
+
 请参考项目里面formSelects的添加方法。
 - 第一步： 把下载的模块放在module文件夹下面
 - 第二步： 打开index.html <br>
@@ -168,14 +175,20 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 ## 3.开发指南
 
 ### 3.1.开发规范
-&emsp;&emsp;阅读开发规范之前请先了解前面“项目结构”的介绍。
 
-- css、图片、第三方lib（layui扩展模块除外）全部放在“/assets/”下面
-- layui扩展模块放在“module”下面，例如项目里面“formSelects”模块
-- 页面html放在“components”下面
+阅读开发规范之前请先了解前面“项目结构”的介绍。
+
+1. css、图片、第三方lib（layui扩展模块除外）全部放在“/assets/”下面；
+2. layui扩展模块放在“module”下面，例如项目里面“formSelects”模块；
+3. 页面html放在“components”下面。
+
+> 注意：不分离版本html不需要放在“components”下面，随便放，因为是后端渲染，前端只需要访问后端的url。
+> 比如我这里不分离版本是放在templates目录下面，templates是SpringBoot默认的视图目录。
+
 
 ### 3.2.入口index.html
-&emsp;&emsp;index.html是项目的主入口，打开index.html你会看到如下代码:
+
+index.html是项目的主入口，打开index.html你会看到如下代码:
 
 ```javascript
 layui.config({
@@ -183,7 +196,10 @@ layui.config({
 }).extend({
     formSelects: 'formSelects/formSelects-v4'
 }).use(['config', 'admin','index'], function () {
-
+    var config = layui.config;
+    var admin = layui.admin;
+    var index = layui.admin;
+    
 });
 ```
 
@@ -194,14 +210,19 @@ layui.config({
 &emsp;&emsp;接着index.html里面使用了“config”、“admin”等模块，所以admin模块里面的一些方法也就即刻执行了。
 admin提供的默认事件也就生效了。
 
+> 注意：不分离版本去除了config.js，所以index.html不需要加载config。
+
 ### 3.3.“config”模块介绍
-&emsp;&emsp;“config”模块主要是配置项目的一些基本参数。
+
+> 注意：不分离版本去除了config.js，不分离的项目也不需要前端做任何配置和缓存。
+
+“config”模块主要是配置项目的一些基本参数。
 
 名称 | 类型 | 描述 
 :---|:--- |:--- 
 base_server | 变量 | 服务器接口地址
 tableName | 变量 | 本地存储表名（token等都会存储在本地中）
-pageTabs | 变量 | 是否开启多标签模式
+pageTabs | 变量 | 是否开启多标签模式，(**不分离版本在index.js中配置**)
 getToken | 方法 | 获取缓存的token
 putToken | 方法 | 缓存token
 removeToken | 方法 | 清除缓存的token
@@ -239,43 +260,74 @@ layui.use(['config'], function () {
 config.js里面的menus格式如下：
 ```javascript
 menus: [{
-            name: '主页',
-            icon: 'layui-icon-home',
-            subMenus: [{
-                name: '主页一',
-                url: '#!console',
-                path: 'console.html'
-            }]
-        }, {
-            name: '系统管理',
-            icon: 'layui-icon-set',
-            subMenus: [{
-                name: '用户管理',
-                url: '#!user',  // 这里url不能带斜杠
-                path: 'system/user.html',
-                auth: 'post:/user/query'
-            }, {
-                name: '角色管理',
-                url: '#!role',
-                path: 'system/role.html',
-                auth: 'get:/role'
-            }]
+    name: '主页',
+    url: 'javascript:;',
+    icon: 'layui-icon-home',
+    subMenus: [{
+        name: '主页一',
+        url: '#!console',
+        path: 'console.html'
+    }]
+}, {
+    name: '系统管理',
+    icon: 'layui-icon-set',
+    url: 'javascript:;',
+    subMenus: [{
+        name: '用户管理',
+        url: '#!user',  // 这里url不能带斜杠
+        path: 'system/user.html',
+        auth: 'post:/user/query'
+    }, {
+        name: '角色管理',
+        url: '#!role',
+        path: 'system/role.html',
+        auth: 'get:/role'
+    }]
+}, {
+    name: '多级菜单',
+    url: 'javascript:;',
+    icon: 'layui-icon-unlink',
+    subMenus: [{
+        name: '二级菜单',
+        url: 'javascript:;',
+        subMenus: [{
+            name: '三级菜单',
+            url: 'javascript:;'
         }]
+    }]
+}, {
+    name: '一级菜单',
+    url: 'javascript:;',
+    icon: 'layui-icon-unlink'
+},{
+    name: '我是隐藏菜单',
+    url: '#!userDetail',
+    path: 'system/user_detail.html',
+    hidden: true
+}]
 ```
+
 &emsp;&emsp;index.js里面会自动使用menus数组渲染左侧导航栏，并且会使用url作为关键字自动注册路由监听。
 目前只设定了最多支持三菜单，原因是因为模板引擎渲染无法使用递归，所以写了三层循环，如果你需要更多级的菜单，
 继续加循环就可以了，主要是因为无法递归，并不是无法做到无限级。 
 
-- `path` 表示html所在的路径，会在components目录下面寻找
-- `url` 是路由的关键字，也就是说点击这个菜单，浏览器地址栏的url会变成`/#!xxx`
+- `path` 表示html所在的路径，会在components目录下面寻找。
+- `url` 是路由的关键字，也就是说点击这个菜单，浏览器地址栏的url会变成`/#!xxx`。
 - `auth` 表示这个菜单需要什么权限，index.js渲染的时候会自动判断权限，没有权限不会渲染出来，不写auth不会进行判断。
+- `hidden` 表示菜单是否渲染到左侧导航栏，比如用户详情界面，不需要渲染到左侧导航，name最好也填写，因为在多标签功能中，
+    name是作为选项卡的标题。
+
+&emsp;上面的menus数组已经展示了各种不同的写法，根部不同场景决定某些参数是否填写。
 
 **注意：**<br>
 &emsp;&emsp;路由关键字`url`不能带`/`，在EasyWeb1.0版本中，url是以`#!system/xxx`这种格式作为关键字的，这种注册方法
 是把`system/`开头的所有url一起注册，但是在2.0版本中使用的是循环menus数组一个一个注册，所以url有`/`就会变成第一种格式，是不正确的。
 
 ### 3.4.admin模块介绍
-&emsp;&emsp;admin模块做了很多的操作，这里只重点介绍admin对外封装的一些操作方法。
+
+admin模块做了很多的操作，这里只重点介绍admin对外封装的一些操作方法。
+
+> 不分离版本admin.js去掉了req和hasPerm方法，其他方法可以放心使用。
 
 #### 3.4.1.admin提供的默认事件
 使用示例：
@@ -320,8 +372,8 @@ closePopupRight() | 无 | 关闭右侧弹出
 popupCenter(object) | 见单独说明 | 中间弹出弹窗
 finishPopupCenter() | 无 | 关闭中间弹出弹窗并回调finish方法
 closePopupCenter() | 无 | 关闭中间弹出弹窗
-req(url, data, success, method) | 见单独说明 | 封装的ajax请求
-hasPerm(auth) | 权限标识 | 判断用户是否有权限
+req(url, data, success, method) | 见单独说明 | 封装的ajax请求，不分离版本无此方法
+hasPerm(auth) | 权限标识 | 判断用户是否有权限，不分离版本无此方法
 putTempData(key, value) | key,value | 缓存临时数据
 getTempData(key,) | key | 获取缓存的临时数据
 rollPage(d) | 方向 | 滚动选项卡tab
@@ -439,6 +491,9 @@ admin.popupCenter({path: 'components/system/user_form.html'});
 
 
 ##### 3.4.2.3.封装的ajax请求req
+
+> 注意：不分离版本没有此方法。
+
 &emsp;&emsp;admin模块封装的ajax请求会自动传递token（access_token），并且会自动把PUT、DELETE请求转成POST、GET请求
 然后加参数_method，因为浏览器不支持PUT、DELETE请求的参数传递，具体原因请百度一下。
 
@@ -471,6 +526,9 @@ req还会自动判断token是否过期，如果token过期会自动跳转到登�
 
 
 ##### 3.4.2.4.判断是否有权限hasPerm
+
+> 注意：不分离版本没有此方法。
+
 &emsp;&emsp;这个方法是用来判断当前登录的用户是否有某一权限的操作，使用这个方法的前提是在index.js里面有一个获取
 服务器的user信息并使用config.putUser方法缓存，并且user里面包含了权限列表，因为admin会调用config.getUser获取
 用户信息从而获取用户的权限列表。
@@ -511,11 +569,12 @@ authorities就是用户的权限集合，authority是权限标识。
 
 > 如果你担心把按钮隐藏了没有什么卵用，会点技术就可以把按钮在弄出来了，这个担心完全是多余的。
 > 因为后台的接口也会有权限验证的，如果没有权限接口会返回{ code: 401, msg: "没有访问权限" }，
-> 那你可能会问了既然后台限制了，界面为什么还要限制，因为这是需求，如你项目没有隐藏按钮的需求可以不用隐藏。
+> 既然后台限制了，界面为什么还要限制，因为这是需求，如你项目没有隐藏按钮的需求可以不用隐藏。
 
 
 ##### 3.4.2.5.缓存临时数据putTempData
-&emsp;&emsp;这个方法是用来把一些临时数据放在session中，页面关闭数据就会失效。
+&emsp;&emsp;这个方法是用来把一些临时数据放在session中，页面关闭数据就会失效。  适当使用缓存可以
+减少接口请求次数，提升用户体验。
 
 使用示例：
 ```javascript
@@ -597,9 +656,11 @@ header、side等，获取用户的信息，判断是否开启选项卡改变页�
 做准备，所以这里就不一一将index.js里面的方法了，虽然index.js里面代码行数也不少，但是仔细看就能看懂，注释也都写了，如果你需要
 微微修改阅读几遍就可以上手修改了。
 
-
+> 需要注意的是：分离和不分离版本的index.js和index.html里面的一些写法有很些不同，请注意不要用混淆了。
 
 ### 3.6.admin提供的css公共类
+
+> 分离和不分离版本css都是一样的，这部分文档就不需要注意什么了，哈哈😄~
 
 #### 3.6.1.辅助类
 
@@ -778,10 +839,25 @@ q.js框架出来新版本了，请联系我进行替换，请多多包含，不�
 &emsp;&emsp;我这里就不提供pandyle.js的用法了，以免跟不上pandyle作者的更新脚步，
 大家可以到这里[pandyle.js](https://gitee.com/pandarrr/pandyle)查看pandyle的开发文档。
 
+> 注意：<br>
+> &emsp;&emsp;不分离版本没有引入pandyle.js，不分离版本的header和side是使用beetl的布局功能实现的，如果你需要在
+> 不分离版本中使用mvvm，请自行在idnex.html中引入pandyle.js。
+
 
 ### 3.10.主题功能
-&emsp;&emsp;EasyWeb包含前后台，所以开发时间比较紧张，暂时不提供自由切换主题的功能，但是提供了一个主题生成器，
-如果你想改变EasyWeb的默认主题，请使用主题生成器：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)
+&emsp;&emsp;EasyWeb包含前后台，所以开发时间比较紧张，暂时只提供了两套主题，但是提供了一个主题生成器，
+请使用主题生成器定制化你的样式：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)
+
+
+
+### 3.11.不分离版本
+
+注意：
+
+&emsp;&emsp;你从EasyWebPage这个地址下载下来的项目是前后端分离版本的，如果你需要前后端不分离版本的页面和后台，
+请从[easyweb-shiro](https://gitee.com/whvse/easyweb-shiro)下载。 easyweb-shiro是Java语言开发的，如果你是
+php或其他后台语言，想要使用不分离版的页面，请联系作者辅助你结合到你的项目中，因为不分离版本页面跟后台耦合比较大，
+分离出静态页面意义不大，所以不分离版本作者就没有独立再维护成纯静态页面了。
 
 
 

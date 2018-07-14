@@ -315,7 +315,7 @@ menus: [{
 - `url` 是路由的关键字，也就是说点击这个菜单，浏览器地址栏的url会变成`/#!xxx`。
 - `auth` 表示这个菜单需要什么权限，index.js渲染的时候会自动判断权限，没有权限不会渲染出来，不写auth不会进行判断。
 - `hidden` 表示菜单是否渲染到左侧导航栏，比如用户详情界面，不需要渲染到左侧导航，name最好也填写，因为在多标签功能中，
-    name是作为选项卡的标题。
+    name是作为选项卡的标题。建议隐藏的菜单都写在最后面，不要写在subMenus里面，当然写在哪都可以实现。
 
 &emsp;上面的menus数组已经展示了各种不同的写法，根部不同场景决定某些参数是否填写。
 
@@ -651,12 +651,60 @@ admin.rollPage();
 
 ### 3.5.index模块介绍
 
-&emsp;&emsp;index模块不像admin一样，提供一些封装的方法供其他页面使用，index模块里面的一些方法主要是用于加载index.html的
+&emsp;&emsp;index模块主要是用于加载index.html的
 header、side等，获取用户的信息，判断是否开启选项卡改变页面局部等操作，说白了就是用来初始化后台布局的，用于给主体部分的界面
-做准备，所以这里就不一一将index.js里面的方法了，虽然index.js里面代码行数也不少，但是仔细看就能看懂，注释也都写了，如果你需要
-微微修改阅读几遍就可以上手修改了。
+做准备，虽然index.js里面代码行数也不少，但是仔细看就能看懂，注释也都写了，如果你需要
+微微修改阅读几遍就可以上手修改了，下面只介绍两个其他页面会用到的封装方法。
 
 > 需要注意的是：分离和不分离版本的index.js和index.html里面的一些写法有很些不同，请注意不要用混淆了。
+
+
+#### 3.5.1.打开新页面或选项卡Tab
+
+```javascript
+layui.use(['index'], function () {
+    var index = layui.index;
+    
+    // 不分离用后台地址
+    index.openNewTab({
+        title:'个人信息', 
+        url:'system/user/myInfo?userId=1',
+        menuId: 'myInfo'
+    });
+    
+    // 分离用html页面
+    index.openNewTab({
+        title: '个人信息', 
+        url: 'components/system/myInfo.html',
+        menuId: 'myInfo'
+    });
+    
+    // 当然这行代码一般会写在按钮点击事件里面，直接写在这里就立即打开新页面了
+});
+```
+
+- `title` 如果开启了多标签，title是选项卡的标题
+- `url` 打开的页面地址
+- `menuId` 这个参数是一个id标识，浏览器地址栏会变成`#!menuId`。
+
+这个功能的使用场景请见`3.8.1`章节
+
+
+#### 3.5.2.关闭选项卡
+
+```javascript
+layui.use(['index'], function () {
+    var index = layui.index;
+    
+    var menuId = 'myInfo';
+    index.closeTab(menuId);
+});
+```
+
+
+---
+
+
 
 ### 3.6.admin提供的css公共类
 
@@ -824,6 +872,74 @@ index.js里面会自动帮你注册。
 **注意：**<br>
 &emsp;&emsp;EasyWeb里面使用的q.js进行过修改，我在里面加了一个刷新的方法，所以请不要擅自替换q.js文件，如果你发现
 q.js框架出来新版本了，请联系我进行替换，请多多包含，不要嫌麻烦，以免出问题。
+
+
+#### 3.8.1.打开不在导航栏中的页面
+
+&emsp;&emsp;比如用户详情、个人信息这些页面，它们不在左侧导航中，但是想打开新页面或者选项卡，
+又比如添加用户、修改用户这个页面现在是用弹窗的形式，如果想用新页面的形式该怎么实现：
+
+**第一种实现方式：**<br>
+&emsp;在分离版本中，你只需要在config.js的menus数组中添加一个隐藏的菜单：
+```javascript
+menus: [{
+    name: '个人信息',
+    url: '#!myInfo',
+    path: 'system/my_info.html',
+    hidden: true
+}]
+```
+html中跳转：
+```html
+<a href="#!myInfo">个人信息</a>
+```
+js中跳转：
+```javascript
+Q.go('myInfo');
+```
+
+> 或许你已经注意到了，这种方式跳转的界面是一个固定页面，如果我们想要传递一些参数，
+> 它就无法满足，所以有了第二种实现方式。
+
+
+**第二种实现方式：**<br>
+```javascript
+layui.use(['index'], function () {
+    var index = layui.index;
+    
+    // 不分离用后台地址
+    index.openNewTab({
+        title:'个人信息', 
+        url:'system/user/myInfo?userId=1',
+        menuId: 'myInfo'
+    });
+    
+    // 分离用html页面
+    index.openNewTab({
+        title: '个人信息', 
+        url: 'components/system/myInfo.html',
+        menuId: 'myInfo'
+    });
+    
+    // 当然这行代码一般会写在按钮点击事件里面，直接写在这里就立即打开新页面了
+});
+```
+
+- `title` 如果开启了多标签，title是选项卡的标题
+- `url` 打开的页面地址
+- `menuId` 这个参数是一个id标识，如果id一样就只会存在一个tab，也就是说打开一次没有关闭就不会再打开新的页面，
+    比如用户详情页面，如果你想userA的详情和userB的详情是两个页面，可以同时存在选项卡中，menuId就不要写一样的。
+
+
+> 注意：<br>
+> 分离版本两种方式都可以用，不分离版本只能用第二种方式，再分离版本中不能使用`?`问号传递参数，建议使用
+> 临时缓存的方式传递参数。
+
+
+请到`3.5.1`和`3.5.2`章节查看跟这个使用场景相关的其他功能方法。
+
+
+---
 
 
 ### 3.9.mvvm数据绑定、组件等

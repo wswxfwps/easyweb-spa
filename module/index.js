@@ -76,7 +76,9 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             $.each(menus, function (i, data) {
                 if (data.url && data.url.indexOf('#!') == 0) {
                     Q.reg(data.url.substring(2), function () {
-                        index.loadView(data);
+                        var menuId = data.url.substring(2);
+                        var menuPath = 'components/' + data.path;
+                        index.loadView(menuId, menuPath, data.name);
                     });
                 }
                 if (data.subMenus) {
@@ -85,9 +87,7 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             });
         },
         // 路由加载组件
-        loadView: function (data) {
-            var menuPath = 'components/' + data.path;
-            var menuId = data.url.substring(2);
+        loadView: function (menuId, menuPath, menuName) {
             var contentDom = '.layui-layout-admin .layui-body';
             admin.showLoading('.layui-layout-admin .layui-body');
             var flag;  // 选项卡是否添加
@@ -100,7 +100,7 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 });
                 if (!flag) {
                     element.tabAdd('admin-pagetabs', {
-                        title: data.name,
+                        title: menuName,
                         content: '<div id="' + menuId + '"></div>',
                         id: menuId
                     });
@@ -176,6 +176,20 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             } else {
                 $('.layui-layout-admin').removeClass('open-tab');
             }
+        },
+        // 打开新页面
+        openNewTab: function (param) {
+            var url = param.url;
+            var title = param.title;
+            var menuId = param.menuId;
+            if (!menuId) {
+                menuId = url.replace(new RegExp('/'), '_');
+            }
+            index.loadView(menuId, url, title);
+        },
+        // 关闭选项卡
+        closeTab: function (menuId) {
+            element.tabDelete('admin-pagetabs', menuId);
         }
     };
 

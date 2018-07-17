@@ -2,10 +2,11 @@
 
 # [EasyWeb](/)
 
-> 基于jquery、layui的管理系统模板
+> 基于layui的管理系统模板
 
-* 支持MVVM、支持前端路由
-* 单页面、响应式、极易上手
+* 支持mvvm、路由，单页面、响应式、易上手
+* 
 
-[GitHub](https://gitee.com/whvse/EasyWebPage)
+[Gitee](https://gitee.com/whvse/EasyWebPage)
+[GitHub](https://github.com/whvcse/EasyWebPage)
 [Get Started](#_1简介)

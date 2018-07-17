@@ -108,6 +108,8 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 contentDom = '#' + menuId;
                 element.tabChange('admin-pagetabs', menuId);
                 admin.rollPage('auto');
+                // 切换tab关闭表格内浮窗
+                $('.layui-table-tips-c').trigger('click');
             }
             if (!flag || admin.isRefresh) {
                 $(contentDom).load(menuPath, function () {

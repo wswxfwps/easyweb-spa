@@ -11,6 +11,15 @@
             搜索：<input id="role-edit-search" class="layui-input search-input" type="text" placeholder="输入关键字"/>&emsp;
             <button id="role-btn-search" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
             <button id="role-btn-add" class="layui-btn icon-btn"><i class="layui-icon">&#xe654;</i>添加</button>
+            &emsp;
+            <div style="width: 180px;display: inline-block;">
+                <select name="aa" xm-select="aa">
+                    <option value="a">aaaa</option>
+                    <option value="b">bbbb</option>
+                    <option value="c">cccc</option>
+                    <option value="d">ddddd</option>
+                </select>
+            </div>
         </div>
 
         <!-- 数据表格 -->
@@ -49,13 +58,14 @@
 </script>
 
 <script>
-    layui.use(['form', 'table', 'util', 'config', 'admin'], function () {
+    layui.use(['form', 'table', 'util', 'config', 'admin', 'formSelects'], function () {
         var form = layui.form;
         var table = layui.table;
         var config = layui.config;
         var layer = layui.layer;
         var util = layui.util;
         var admin = layui.admin;
+        var formSelects = layui.formSelects;
 
         //渲染表格
         table.render({

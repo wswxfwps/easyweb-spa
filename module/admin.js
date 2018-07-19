@@ -31,29 +31,22 @@ layui.define(['config', 'layer'], function (exports) {
         },
         // 右侧弹出
         popupRight: function (path) {
-            popupRightIndex = layer.open({
-                type: 1,
-                id: 'adminPopupR',
-                anim: 2,
-                isOutAnim: false,
-                title: false,
-                closeBtn: false,
-                offset: 'r',
-                shade: .2,
-                shadeClose: true,
-                resize: false,
-                area: '336px',
-                skin: 'layui-layer-adminRight',
-                success: function () {
-                    //admin.showLoading('#adminPopupR');
-                    $('#adminPopupR').load(path, function () {
-                        //admin.removeLoading('#adminPopupR');
-                    });
-                },
-                end: function () {
-                    layer.closeAll('tips');
-                }
-            });
+            var param = new Object();
+            param.path = path;
+            param.id = 'adminPopupR';
+            param.title = false;
+            param.anim = 2;
+            param.isOutAnim = false;
+            param.closeBtn = false;
+            param.offset = 'r';
+            param.shadeClose = true;
+            param.area = '336px';
+            param.skin = 'layui-layer-adminRight';
+            param.end = function () {
+                layer.closeAll('tips');
+            };
+            popupRightIndex = admin.open(param);
+            return popupRightIndex;
         },
         // 关闭右侧弹出
         closePopupRight: function () {
@@ -61,29 +54,10 @@ layui.define(['config', 'layer'], function (exports) {
         },
         // 中间弹出
         popupCenter: function (param) {
+            param.id = 'adminPopupC';
             popupCenterParam = param;
-            popupCenterIndex = layer.open({
-                type: 1,
-                id: 'adminPopupC',
-                title: param.title ? param.title : false,
-                shade: .2,
-                offset: '120px',
-                area: param.area ? param.area : '450px',
-                resize: false,
-                skin: 'layui-layer-adminCenter',
-                success: function () {
-                    $('#adminPopupC').load(param.path, function () {
-                        $('#adminPopupC .close').click(function () {
-                            layer.close(popupCenterIndex);
-                        });
-                        param.success ? param.success() : '';
-                    });
-                },
-                end: function () {
-                    layer.closeAll('tips');
-                    param.end ? param.end() : '';
-                }
-            });
+            popupCenterIndex = admin.open(param);
+            return popupCenterIndex;
         },
         // 关闭中间弹出并且触发finish回调
         finishPopupCenter: function () {
@@ -94,7 +68,21 @@ layui.define(['config', 'layer'], function (exports) {
         closePopupCenter: function () {
             layer.close(popupCenterIndex);
         },
-        // 封装ajax请求
+        // 封装layer.open
+        open: function (param) {
+            var sCallBack = param.success;
+            param.type = 1;
+            param.area = param.area ? param.area : '450px';
+            param.offset = param.offset ? param.offset : '120px';
+            param.resize ? param.resize : false;
+            param.shade ? param.shade : .2;
+            param.success = function (layero, index) {
+                sCallBack ? sCallBack(layero, index) : '';
+                $(layero).children('.layui-layer-content').load(param.path);
+            };
+            return layer.open(param);
+        },
+        // 封装ajax请求，返回数据类型为json
         req: function (url, data, success, method) {
             if ('put' == method.toLowerCase()) {
                 method = 'POST';
@@ -107,25 +95,12 @@ layui.define(['config', 'layer'], function (exports) {
             if (token) {
                 data.access_token = token.access_token;
             }
-            $.ajax({
+            admin.ajax({
                 url: config.base_server + url,
                 data: data,
                 type: method,
-                dataType: 'JSON',
-                success: function (data) {
-                    success(data);
-                },
-                error: function (xhr) {
-                    console.log(xhr.status + ' - ' + xhr.statusText);
-                    if (xhr.status == 401) {
-                        config.removeToken();
-                        layer.msg('登录过期', {icon: 2}, function () {
-                            location.href = '/login.html';
-                        });
-                    } else {
-                        success({code: xhr.status, msg: xhr.statusText});
-                    }
-                },
+                dataType: 'json',
+                success: success(result, status, xhr),
                 beforeSend: function (xhr) {
                     var token = config.getToken();
                     if (token) {
@@ -133,6 +108,36 @@ layui.define(['config', 'layer'], function (exports) {
                     }
                 }
             });
+        },
+        // 封装ajax请求
+        ajax: function (param) {
+            var successCallback = param.success;
+            param.success = function (result, status, xhr) {
+                // 判断登录过期和没有权限
+                var jsonRs;
+                if ('json' == param.dataType.toLowerCase()) {
+                    jsonRs = result;
+                } else if ('html' == param.dataType.toLowerCase() || 'text' == param.dataType.toLowerCase()) {
+                    jsonRs = admin.parseJSON(result);
+                }
+                if (jsonRs) {
+                    if (jsonRs.code == 401) {
+                        config.removeToken();
+                        layer.msg('登录过期', {icon: 2, time: 1500}, function () {
+                            location.replace('/login.html');
+                        }, 1000);
+                        return;
+                    } else if (jsonRs.code == 403) {
+                        layer.msg('没有权限', {icon: 2});
+                        return;
+                    }
+                }
+                successCallback(result, status, xhr);
+            };
+            param.error = function (xhr) {
+                success({code: xhr.status, msg: xhr.statusText});
+            };
+            $.ajax(param);
         },
         // 判断是否有权限
         hasPerm: function (auth) {
@@ -200,6 +205,18 @@ layui.define(['config', 'layer'], function (exports) {
         refresh: function () {
             admin.isRefresh = true;
             Q.refresh();
+        },
+        // 判断是否为json
+        parseJSON: function (str) {
+            if (typeof str == 'string') {
+                try {
+                    var obj = JSON.parse(str);
+                    if (typeof obj == 'object' && obj) {
+                        return obj;
+                    }
+                } catch (e) {
+                }
+            }
         }
     };
 
@@ -267,6 +284,10 @@ layui.define(['config', 'layer'], function (exports) {
         // 关闭所有选项卡
         closeAllTabs: function () {
             $('.layui-layout-admin .layui-body .layui-tab .layui-tab-title li:gt(0)').find(".layui-tab-close").trigger("click");
+        },
+        // 关闭所有弹窗
+        closeDialog: function () {
+            layer.closeAll('page');
         }
     };
 

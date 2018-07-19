@@ -489,6 +489,33 @@ admin.popupCenter({
 admin.popupCenter({path: 'components/system/user_form.html'});
 ```
 
+&emsp;&emsp;默认高度是自适应的，设置了宽高后内容超出是无法出现滚动条的，因为出现弹窗里面的下拉框select下拉会出现滚动条，所以amdin.css里面
+禁止了弹窗的滚动条，如果你需要弹窗出现滚动条，请使用如下的方式：
+```javascript
+admin.popupCenter({
+    title: 'xxxxx',
+    area: ['500px','300px'],
+    path: 'system/user/editForm',
+    success: function (layero, index) {
+        // 关键代码
+        $(layero).children('.layui-layer-content').css('overflow-y', 'scroll');
+    },
+    finish: function() {
+      
+    }
+});
+```
+只需要在success回调方法里面手动加上样式就可以了。
+```javascript
+// 写scroll可以防止弹窗内表格出现滚动条
+$(layero).children('.layui-layer-content').css('overflow-y', 'scroll');
+// 弹窗内没有表格使用auto即可
+$(layero).children('.layui-layer-content').css('overflow-y', 'auto');
+// 水平垂直都有滚动条使用overflow
+$(layero).children('.layui-layer-content').css('overflow', 'auto');
+```
+
+
 
 ##### 3.4.2.3.封装的ajax请求req
 

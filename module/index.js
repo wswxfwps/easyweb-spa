@@ -110,6 +110,13 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 admin.rollPage('auto');
                 // 切换tab关闭表格内浮窗
                 $('.layui-table-tips-c').trigger('click');
+                // 解决切换tab滚动条时而消失的问题
+                var $iframe = $('.layui-layout-admin .layui-body .layui-tab-content .layui-tab-item.layui-show .admin-iframe')[0];
+                if ($iframe) {
+                    $iframe.style.height = "99%";
+                    $iframe.scrollWidth;
+                    $iframe.style.height = "100%";
+                }
             }
             if (!flag || admin.isRefresh) {
                 $(contentDom).load(menuPath, function () {
@@ -144,8 +151,7 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
         bindEvent: function () {
             // 退出登录
             $('#btnLogout').click(function () {
-                layer.confirm('确定退出登录？', function (i) {
-                    layer.close(i);
+                layer.confirm('确定退出登录？', function () {
                     config.removeToken();
                     location.replace('login.html');
                 });
@@ -185,7 +191,7 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             var title = param.title;
             var menuId = param.menuId;
             if (!menuId) {
-                menuId = url.replace(new RegExp('/'), '_');
+                menuId = url.replace(/[?:=&/]/g, '_');
             }
             index.loadView(menuId, url, title);
         },

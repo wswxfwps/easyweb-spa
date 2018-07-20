@@ -17,9 +17,15 @@
         name: 'EasyWeb 2.0',
         repo: '',
         coverpage: true,
-        coverpage: 'cover.md'
+        coverpage: 'cover.md',
+        search: {
+            placeholder: '搜索',
+            noData: '没有结果',
+            depth: 5  // 搜索标题的最大程级, 1 - 6
+        }
     }
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+<script src="//unpkg.com/docsify/lib/plugins/search.js"></script>
 </body>
 </html>

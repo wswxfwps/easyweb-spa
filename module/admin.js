@@ -100,7 +100,7 @@ layui.define(['config', 'layer'], function (exports) {
                 data: data,
                 type: method,
                 dataType: 'json',
-                success: success(result, status, xhr),
+                success: success,
                 beforeSend: function (xhr) {
                     var token = config.getToken();
                     if (token) {

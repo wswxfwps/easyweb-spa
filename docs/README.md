@@ -8,8 +8,13 @@
 * 演示地址：[https://whvse.gitee.io/easywebpage/](https://whvse.gitee.io/easywebpage/login.html)
 * 演示账号：随便输 &emsp;&emsp; 密码：随便输 
 
-&emsp;EasyWeb包含前后台，[前台地址](https://gitee.com/whvse/EasyWebPage)，[后台地址](https://gitee.com/whvse/EasyWeb)，
-后台基于springboot、Security、OAuth2等。 此文档包含分离和不分离版本的前端开发指南，两者的使用是有些区别的，
+&emsp;EasyWeb包含前后台，
+[前台地址](https://gitee.com/whvse/EasyWebPage)，
+[分离版后台地址](https://gitee.com/whvse/EasyWeb)，
+[不分离版后台地址](https://gitee.com/whvse/easyweb-shiro)，
+后台基于springboot、mybatis、mybatis-plus、Security、OAuth2等，不分离版权限使用shiro。 
+
+&emsp;此文档包含分离和不分离版本的前端开发指南，两者的使用是有些区别的，
 不同的地方在文档中都着重指明了，参考文档使用即可。
 
 ### 1.1.使用框架 
@@ -47,6 +52,9 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 |-login.html            // 登陆界面
 ```
 
+> 不分离版没有components目录，不分离版的页面由后台输出，前端只有assets和module
+
+
 ## 2.快速开始
 
 &emsp;&emsp;快速开始之前请确保你已经接触过[layui](http://www.layui.com/doc/)并了解layui的使用，
@@ -54,9 +62,9 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 
 ### 2.1.导入项目
 
-1. 直接下载项目，或使用git下载
-2. 使用IDEA（WebStorm）或者HBuilder等前端开发工具进行开发
-3. 运行login.html或者index.html启动
+1. 直接下载项目，或使用git下载；
+2. 使用IDEA（WebStorm）或者HBuilder等前端开发工具进行开发；
+3. 运行login.html或者index.html启动：
 
     ![](https://ws1.sinaimg.cn/large/006a7GCKgy1fswshc48i2j30i80d5jt6.jpg)
 
@@ -136,7 +144,7 @@ mvvm框架 | [pandyle.js](https://gitee.com/pandarrr/pandyle) (专为jquery编�
 - **第二步：<br>**
    在module/config.js里面找到menus变量，添加如下所示：
    
-   ![配置menus示例](https://ws1.sinaimg.cn/large/006a7GCKgy1fswp9fu8h4j30lx0fxq44.jpg)
+   ![配置menus示例](https://ws1.sinaimg.cn/large/006a7GCKgy1ftg1etm1ahj30i80b4752.jpg)
 
 - **第三步：<br>**
    运行项目，查看效果
@@ -316,6 +324,7 @@ menus: [{
 - `auth` 表示这个菜单需要什么权限，index.js渲染的时候会自动判断权限，没有权限不会渲染出来，不写auth不会进行判断。
 - `hidden` 表示菜单是否渲染到左侧导航栏，比如用户详情界面，不需要渲染到左侧导航，name最好也填写，因为在多标签功能中，
     name是作为选项卡的标题。建议隐藏的菜单都写在最后面，不要写在subMenus里面，当然写在哪都可以实现。
+    如何打开隐藏的菜单，直接使用`<a href="#!userDetail"></a>`即可，或者`Q.go('userDetail')`。
 
 &emsp;上面的menus数组已经展示了各种不同的写法，根部不同场景决定某些参数是否填写。
 
@@ -327,7 +336,7 @@ menus: [{
 
 admin模块做了很多的操作，这里只重点介绍admin对外封装的一些操作方法。
 
-> 不分离版本admin.js去掉了req和hasPerm方法，其他方法可以放心使用。
+> 不分离版本admin.js去掉了hasPerm方法，其他方法可以放心使用。
 
 #### 3.4.1.admin提供的默认事件
 使用示例：
@@ -349,6 +358,7 @@ rightPage | 右滚动选项卡
 closeThisTabs | 关闭当前选项卡
 closeOtherTabs | 关闭其他选项卡
 closeAllTabs | 关闭全部选项卡
+closeDialog | 关闭元素所在的layer弹窗
 
 #### 3.4.2.admin提供的方法
 使用示例：
@@ -367,22 +377,41 @@ layui.use(['admin'], function () {
 flexible(expand) | true和false | 折叠侧导航 
 activeNav(url) | a标签里面的href值 | 设置侧导航栏选中
 refresh() | 无 | 刷新主体部分
+ | | 
 popupRight(path) | html地址 | 右侧弹出弹窗
 closePopupRight() | 无 | 关闭右侧弹出
+ | | 
 popupCenter(object) | 见单独说明 | 中间弹出弹窗
 finishPopupCenter() | 无 | 关闭中间弹出弹窗并回调finish方法
 closePopupCenter() | 无 | 关闭中间弹出弹窗
-req(url, data, success, method) | 见单独说明 | 封装的ajax请求，不分离版本无此方法
+ | | 
+open(object) | 见单独说明 | 封装layer弹出弹窗
+ | | 
+req(url, data, success, method) | 见单独说明 | 封装的ajax请求，req只返回json
+ajax(object) | 见单独说明 | 封装的ajax请求
+ | | 
 hasPerm(auth) | 权限标识 | 判断用户是否有权限，不分离版本无此方法
+ | | 
 putTempData(key, value) | key,value | 缓存临时数据
 getTempData(key,) | key | 获取缓存的临时数据
+ | | 
 rollPage(d) | 方向 | 滚动选项卡tab
+
+<br>
+
+> 首先说明一下admin为什么要封装那么多layer的弹窗，因为admin封装的弹窗都是支持弹窗的内容是一个单独的页面，
+并且不是以iframe的方式嵌入页面，也就是单页面的形式。
+
+<br>
+
 
 ##### 3.4.2.1.右侧弹出弹窗popupRight
 使用示例：
 ```javascript
 admin.popupRight('components/tpl/message.html');
 ```
+> 分离版本填写独立的html页面即可，不分离版本填写后台的url(Controller)
+
 “message.html”里面也可以有js代码，如下所示：
 ```html
 <div>
@@ -400,12 +429,16 @@ admin.popupRight('components/tpl/message.html');
     });
 </script>
 ```
+
+> 注意：因为是单页面，不是iframe，所以页面里面请不要写`<html> <head> <title>`之类的东西。
+
+
 效果图：
 
 ![右侧弹出示例](https://ws1.sinaimg.cn/large/006a7GCKgy1fswkiisvg1j30b406g3z3.jpg)
 
 ##### 3.4.2.2.中间弹出弹窗popupCenter
-&emsp;&emsp;你可能会问中间弹出的弹窗不是很普通吗，为什么admin还要封装一下，因为admin封装的带有回调功能。
+&emsp;&emsp;admin封装的popupCenter虽然没有什么特别的样式，但是带有回调的功能。
 
 使用示例（一般用在表单弹窗，如添加、修改用户等）：
 ```javascript
@@ -420,6 +453,24 @@ admin.popupCenter({
     }
 });
 ```
+
+**参数说明：**
+
+参数 | 类型 | 是否必须 | 描述
+:---|:--- |:--- |:--- 
+title | 变量 | 否 | 标题，不写没有标题 
+`path` | 变量 | 是 | html路径
+`finish` | 方法 | 否 | finish回调
+success | 方法 | 否 | html渲染完毕的回调
+end | 方法 | 否 | 弹窗关闭的回调
+... | ... | ... | 省略更多参数
+
+<br>
+
+> 请注意，除了`path`和`finish`是popupCenter新增的参数，其他参数均与layer的open参数一样，但是`type`和`content`参数无效，
+> type固定是1（页面层），content会被path的内容覆盖。
+
+<br>
 
 “user_form.html”内容如下：
 ```html
@@ -454,16 +505,6 @@ admin.popupCenter({
 </script>
 ```
 
-**参数说明：**
-
-参数 | 类型 | 是否必须 | 描述
-:---|:--- |:--- |:--- 
-title | 变量 | 否 | 标题，不写没有标题 
-path | 变量 | 是 | html路径
-success | 方法 | 否 | html渲染完毕的回调
-finish | 方法 | 否 | finish回调
-end | 方法 | 否 | 弹窗关闭的回调
-
 示例图：
 
 ![中间弹窗示例](https://ws1.sinaimg.cn/large/006a7GCKgy1fswla4k4bmj30b407wmxb.jpg)
@@ -489,19 +530,45 @@ admin.popupCenter({
 admin.popupCenter({path: 'components/system/user_form.html'});
 ```
 
-&emsp;&emsp;默认高度是自适应的，设置了宽高后内容超出是无法出现滚动条的，因为出现弹窗里面的下拉框select下拉会出现滚动条，所以amdin.css里面
+<br>
+
+##### 3.4.2.3.封装的layer弹窗open
+
+&emsp;&emsp;前面讲了admin所封装的弹窗目的是在不使用iframe的前提下支持使用独立的页面，这样便于我们维护代码，减少一个页面里面的代码量。
+
+使用方法：
+
+```javascript
+admin.open({
+    title: 'xxx',
+    path: 'system/user_form.html',
+    success: function(){
+        
+    }
+});
+```
+
+参数说明：
+
+&emsp;&emsp;`path`是新增的参数，其他参数均为layer.open的参数，但是`type`和`content`参数无效，type固定是1（页面层），
+content会被path的内容覆盖，open没有finish方法，popupCenter才有。
+
+
+<br>
+
+**如何让弹窗出现滚动条？**
+
+
+&emsp;&emsp;弹窗的默认高度是自适应的，设置了宽高后内容超出是无法出现滚动条的，因为出现弹窗里面的下拉框select下拉会出现滚动条，所以amdin.css里面
 禁止了弹窗的滚动条，如果你需要弹窗出现滚动条，请使用如下的方式：
 ```javascript
-admin.popupCenter({
+admin.open({
     title: 'xxxxx',
     area: ['500px','300px'],
     path: 'system/user/editForm',
     success: function (layero, index) {
-        // 关键代码
+        // 关键代码，   ↑↑↑↑↑↑↑↑↑↑↑↑↑（上面的两个参数不要忘了）
         $(layero).children('.layui-layer-content').css('overflow-y', 'scroll');
-    },
-    finish: function() {
-      
     }
 });
 ```
@@ -509,20 +576,25 @@ admin.popupCenter({
 ```javascript
 // 写scroll可以防止弹窗内表格出现滚动条
 $(layero).children('.layui-layer-content').css('overflow-y', 'scroll');
+
 // 弹窗内没有表格使用auto即可
 $(layero).children('.layui-layer-content').css('overflow-y', 'auto');
+
 // 水平垂直都有滚动条使用overflow
 $(layero).children('.layui-layer-content').css('overflow', 'auto');
 ```
+admin.popupCenter也同样支持此使用方法
 
+<br>
 
+##### 3.4.2.4.封装的ajax请求req
 
-##### 3.4.2.3.封装的ajax请求req
-
-> 注意：不分离版本没有此方法。
+> 注意：req不支持指定返回的数据类型（json、html、text等），只会返回json的数据。
 
 &emsp;&emsp;admin模块封装的ajax请求会自动传递token（access_token），并且会自动把PUT、DELETE请求转成POST、GET请求
-然后加参数_method，因为浏览器不支持PUT、DELETE请求的参数传递，具体原因请百度一下。
+然后加参数_method，因为浏览器不支持PUT、DELETE请求的参数传递，具体原因请百度一下，**不分离版本不会进行此操作**。
+
+&emsp;&emsp;另外分离版本和不分离版本封装的ajax和req都会检验状态码（401登录过期，403没有权限），登录过期会自动跳转到登录界面。
 
 使用示例：
 
@@ -549,10 +621,35 @@ admin.req('user', {
    code是http的错误码，msg是错误信息）
 - 第四个参数： 请求的方法（GET、POST、PUT、DELETE）
 
-req还会自动判断token是否过期，如果token过期会自动跳转到登录页面。
+&emsp;req还会自动判断token是否过期，如果token过期会自动跳转到登录页面，不分离版本是根据code判断401为登录过期。
 
 
-##### 3.4.2.4.判断是否有权限hasPerm
+##### 3.4.2.5.封装的ajax请求ajax
+
+使用方法：
+```javascript
+admin.ajax({
+   url: 'xxxx',
+   data: {
+       aa:''
+   },
+   dataType: 'json',
+   type: 'POST',
+   success: function(result,status,xhr) {
+     
+   } 
+});
+```
+
+&emsp;使用方法跟`$.ajax`一模一样，admin封装只是在success之后先判断是否为登录过期和没有权限，然后再执行你的success方法。
+
+&emsp;使用参数也跟`$.ajax`一样，请到[http://www.runoob.com/jquery/ajax-ajax.html](http://www.runoob.com/jquery/ajax-ajax.html)文档中查看`$.ajax`的参数说明。
+
+
+<br>
+
+
+##### 3.4.2.6.判断是否有权限hasPerm
 
 > 注意：不分离版本没有此方法。
 
@@ -599,7 +696,7 @@ authorities就是用户的权限集合，authority是权限标识。
 > 既然后台限制了，界面为什么还要限制，因为这是需求，如你项目没有隐藏按钮的需求可以不用隐藏。
 
 
-##### 3.4.2.5.缓存临时数据putTempData
+##### 3.4.2.7.缓存临时数据putTempData
 &emsp;&emsp;这个方法是用来把一些临时数据放在session中，页面关闭数据就会失效。  适当使用缓存可以
 减少接口请求次数，提升用户体验。
 
@@ -657,7 +754,7 @@ console.log(tName);
 </script>
 ```
 
-##### 3.4.2.6 滚动选项卡 rollPage
+##### 3.4.2.8 滚动选项卡 rollPage
 使用示例：
 ```javascript
 // 向左滚动
@@ -861,7 +958,7 @@ model-form-footer | 弹窗里面表单底部操作按钮容器的样式
 ![](https://ws1.sinaimg.cn/large/006a7GCKgy1fswqdrhhpvj30h30cnweo.jpg)
 
 
-#### 3.6.4.admin.css可用于任何layui后台大布局
+#### 3.6.4.完全基于layui后台大布局
 &emsp;&emsp;EasyWeb完全基于layui的后台大布局进行样式修改，html结构是完全基于layui的后台大布局的，所以项目里面的
 admin.css你可以用于任何layui后台大布局的页面，加入之后你的页面就得到EasyWeb的样式了， 但是侧导航栏
 的折叠事件、全屏等事件是写在admin.js里面的，所以建议你直接使用EasyWeb的框架，当然如果你有自己的基于layui后台
@@ -989,7 +1086,9 @@ layui.use(['index'], function () {
 
 ### 3.10.主题功能
 &emsp;&emsp;EasyWeb包含前后台，所以开发时间比较紧张，暂时只提供了两套主题，但是提供了一个主题生成器，
-请使用主题生成器定制化你的样式：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)
+请使用主题生成器定制化你的样式：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)。
+
+&emsp;EasyWeb的主题生成器可以深度定制主题，样式深度到按钮、单选框、下拉框、选项卡等样式。
 
 
 
@@ -1019,6 +1118,11 @@ php或其他后台语言，想要使用不分离版的页面，请联系作者�
 
 ## 5.更新日志
 
+- **2018-07-20 - 发布不分离版的easyweb-shiro稳定版本**
+
+    - 不分离版没有config.js，但是同样支持分离版的所有功能
+    - 改进路由的注册方法，全部由框架自动完成，开发方式与传统一样，但是可以轻松的使用路由功能提升操作体验
+
 - **2018-07-12 - 增加主题、多标签**
     
     - 增加多标签tab功能，并且增加自由切换是否开启多标签功能
@@ -1033,6 +1137,7 @@ php或其他后台语言，想要使用不分离版的页面，请联系作者�
 - **2018-02-11 - 发布EasyWeb1.0版本**
 
     - 基于layui后台大布局、q.js路由框架搭建出第一个版本
+    - 1.0 版本在easyweb的gitee附件中下载
 
 
 ## 6.联系方式
@@ -1040,5 +1145,8 @@ php或其他后台语言，想要使用不分离版的页面，请联系作者�
 ![群二维码](https://ws1.sinaimg.cn/large/006a7GCKgy1fstbxycj1xj305k07m75h.jpg)
 
 ### 6.2.我要打赏
-都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！
+&emsp;&emsp;都是猿友，撸码不易，如果这个轮子对你有用，不妨打赏一下！
 [码云](https://gitee.com/whvse/EasyWebPage)已开启捐赠功能，谢谢支持！
+
+&emsp;&emsp;EasyWeb目前提供了“路由+mvvm分离版”、“基于oauth2的后台”、“基于shiro的不分离版”、“不分离版的页面”、
+“EasyWeb主题生成器”、“前端开发文档”等项目，并且全部开源，欢迎加入一起开发，或者提交pull requests。

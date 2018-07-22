@@ -1105,8 +1105,7 @@ php或其他后台语言，想要使用不分离版的页面，请联系作者�
 
 ### 3.12.树形表格treeTable
 
-&emsp;&emsp;layui本身没有树形表格的功能了，社区也没有人分享出一个好的树形表格，于是就自己写了一个树形表格，完全在layui的数据表格上
-进行扩展实现的，所以具备了layui数据表格的全部功能，有人是基于tree实现的树形表格，这种实现功能了就太弱了。
+&emsp;&emsp;在layui的数据表格上进行扩展实现的，所以具备了layui数据表格的全部功能。
 
 treeTable项目地址：[https://gitee.com/whvse/treetable-lay](https://gitee.com/whvse/treetable-lay)。
 

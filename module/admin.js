@@ -135,7 +135,7 @@ layui.define(['config', 'layer'], function (exports) {
                 successCallback(result, status, xhr);
             };
             param.error = function (xhr) {
-                success({code: xhr.status, msg: xhr.statusText});
+                param.success({code: xhr.status, msg: xhr.statusText});
             };
             $.ajax(param);
         },

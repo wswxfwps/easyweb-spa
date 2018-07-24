@@ -10,6 +10,7 @@ layui.define(['layer', 'table'], function (exports) {
             if (!treetable.checkParam(param)) {
                 return;
             }
+            var doneCallback = param.done;
             // 获取数据
             var mData = [];
             $.getJSON(param.url, param.where, function (res) {
@@ -79,8 +80,14 @@ layui.define(['layer', 'table'], function (exports) {
                     $(param.elem).next().addClass('treeTable');
                     $('.treeTable .layui-table-page').css('display', 'none');
                     $('.treeTable .treeTable-icon').click(function () {
-                        treetable.toggleRows($(this));
+                        treetable.toggleRows($(this), param.treeLinkage);
                     });
+                    if (param.treeDefaultClose) {
+                        treetable.foldAll(param.elem);
+                    }
+                    if (doneCallback) {
+                        doneCallback(res, curr, count);
+                    }
                 };
 
                 // 渲染表格
@@ -104,7 +111,7 @@ layui.define(['layer', 'table'], function (exports) {
             return num + treetable.getEmptyNum(tPid, data);
         },
         // 展开/折叠行
-        toggleRows: function ($dom) {
+        toggleRows: function ($dom, linkage) {
             var type = $dom.attr('lay-ttype');
             if ('file' == type) {
                 return;
@@ -124,23 +131,26 @@ layui.define(['layer', 'table'], function (exports) {
                 if (mId == pid) {
                     if (isOpen) {
                         $(this).hide();
+                        if ('dir' == ttype && tOpen == isOpen) {
+                            $ti.trigger('click');
+                        }
                     } else {
                         $(this).show();
-                    }
-                    if ('dir' == ttype && tOpen == isOpen) {
-                        $ti.trigger('click');
+                        if (linkage && 'dir' == ttype && tOpen == isOpen) {
+                            $ti.trigger('click');
+                        }
                     }
                 }
             });
         },
         // 检查参数
         checkParam: function (param) {
-            if (!param.treeSpid) {
+            if (!param.treeSpid && param.treeSpid != 0) {
                 layer.msg('参数treeSpid不能为空', {icon: 5});
                 return false;
             }
 
-            if (!param.treeColIndex) {
+            if (!param.treeColIndex && param.treeColIndex != 0) {
                 layer.msg('参数treeColIndex不能为空', {icon: 5});
                 return false;
             }

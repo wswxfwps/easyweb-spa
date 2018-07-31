@@ -10,6 +10,7 @@ layui.define(['layer', 'table'], function (exports) {
             if (!treetable.checkParam(param)) {
                 return;
             }
+            var doneCallback = param.done;
             // 获取数据
             var mData = [];
             $.getJSON(param.url, param.where, function (res) {
@@ -78,9 +79,17 @@ layui.define(['layer', 'table'], function (exports) {
                 param.done = function (res, curr, count) {
                     $(param.elem).next().addClass('treeTable');
                     $('.treeTable .layui-table-page').css('display', 'none');
-                    $('.treeTable .treeTable-icon').click(function () {
-                        treetable.toggleRows($(this));
-                    });
+                    $(param.elem).next().attr('treeLinkage', param.treeLinkage);
+                    // 绑定事件换成对body绑定
+                    /*$('.treeTable .treeTable-icon').click(function () {
+                        treetable.toggleRows($(this), param.treeLinkage);
+                    });*/
+                    if (param.treeDefaultClose) {
+                        treetable.foldAll(param.elem);
+                    }
+                    if (doneCallback) {
+                        doneCallback(res, curr, count);
+                    }
                 };
 
                 // 渲染表格
@@ -104,7 +113,7 @@ layui.define(['layer', 'table'], function (exports) {
             return num + treetable.getEmptyNum(tPid, data);
         },
         // 展开/折叠行
-        toggleRows: function ($dom) {
+        toggleRows: function ($dom, linkage) {
             var type = $dom.attr('lay-ttype');
             if ('file' == type) {
                 return;
@@ -124,23 +133,26 @@ layui.define(['layer', 'table'], function (exports) {
                 if (mId == pid) {
                     if (isOpen) {
                         $(this).hide();
+                        if ('dir' == ttype && tOpen == isOpen) {
+                            $ti.trigger('click');
+                        }
                     } else {
                         $(this).show();
-                    }
-                    if ('dir' == ttype && tOpen == isOpen) {
-                        $ti.trigger('click');
+                        if (linkage && 'dir' == ttype && tOpen == isOpen) {
+                            $ti.trigger('click');
+                        }
                     }
                 }
             });
         },
         // 检查参数
         checkParam: function (param) {
-            if (!param.treeSpid) {
+            if (!param.treeSpid && param.treeSpid != 0) {
                 layer.msg('参数treeSpid不能为空', {icon: 5});
                 return false;
             }
 
-            if (!param.treeColIndex) {
+            if (!param.treeColIndex && param.treeColIndex != 0) {
                 layer.msg('参数treeColIndex不能为空', {icon: 5});
                 return false;
             }
@@ -171,6 +183,16 @@ layui.define(['layer', 'table'], function (exports) {
     };
 
     layui.link(layui.cache.base + 'treetable-lay/treetable.css');
+
+    // 给图标列绑定事件
+    $('body').on('click', '.treeTable .treeTable-icon', function () {
+        var treeLinkage = $(this).parents('.treeTable').attr('treeLinkage');
+        if ('true' == treeLinkage) {
+            treetable.toggleRows($(this), true);
+        } else {
+            treetable.toggleRows($(this), false);
+        }
+    });
 
     exports('treetable', treetable);
 });

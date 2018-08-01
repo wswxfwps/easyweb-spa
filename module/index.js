@@ -193,7 +193,12 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
             if (!menuId) {
                 menuId = url.replace(/[?:=&/]/g, '_');
             }
-            index.loadView(menuId, url, title);
+
+            Q.reg(menuId, function () {
+                index.loadView(menuId, url, title);
+            });
+
+            Q.go(menuId);
         },
         // 关闭选项卡
         closeTab: function (menuId) {

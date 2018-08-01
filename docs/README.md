@@ -785,6 +785,21 @@ header、side等，获取用户的信息，判断是否开启选项卡改变页�
 
 #### 3.5.1.打开新页面或选项卡Tab
 
+**对于已经注册过路由的页面，打开或者切换选项卡很简单：**
+
+html方式：
+```html
+<a href="#!xxx">跳转到xxx</a>
+```
+js方式：
+```javascript
+Q.go('xxx');
+```
+
+<br>
+
+**对于没有注册路由的页面，使用index.openNewTab打开：**
+
 ```javascript
 layui.use(['index'], function () {
     var index = layui.index;
@@ -811,8 +826,16 @@ layui.use(['index'], function () {
 - `url` 打开的页面地址
 - `menuId` 这个参数是一个id标识，浏览器地址栏会变成`#!menuId`。
 
+> 注意：<br>
+> &emsp;&emsp;建议最好不使用index.openNewTab来打开选项卡，因为这种方式是每次都临时注册路由，很不友好，
+> 建议自己手动注册路由，参考路由章节文档介绍。
+
+<br>
+
 这个功能的使用场景请见`3.8.1`章节
 
+
+<br>
 
 #### 3.5.2.关闭选项卡
 
@@ -821,6 +844,7 @@ layui.use(['index'], function () {
     var index = layui.index;
     
     var menuId = 'myInfo';
+    // 关闭选项卡
     index.closeTab(menuId);
 });
 ```
@@ -995,7 +1019,7 @@ index.js里面会自动帮你注册。
 
 **注意：**<br>
 &emsp;&emsp;EasyWeb里面使用的q.js进行过修改，我在里面加了一个刷新的方法，所以请不要擅自替换q.js文件，如果你发现
-q.js框架出来新版本了，请联系我进行替换，请多多包含，不要嫌麻烦，以免出问题。
+q.js框架出来新版本了，请联系我进行替换，以免出问题。
 
 
 #### 3.8.1.打开不在导航栏中的页面
@@ -1003,7 +1027,55 @@ q.js框架出来新版本了，请联系我进行替换，请多多包含，不�
 &emsp;&emsp;比如用户详情、个人信息这些页面，它们不在左侧导航中，但是想打开新页面或者选项卡，
 又比如添加用户、修改用户这个页面现在是用弹窗的形式，如果想用新页面的形式该怎么实现：
 
-**第一种实现方式：**<br>
+<br>
+
+##### 3.8.1.1.第一种方式：自己注册路由
+自己注册路由：
+```javascript
+// 无参数路由，用缓存传递参数
+Q.reg('userInfo', function () {
+    // 获取缓存参数
+    var userId = admin.getTempData('userId');  // 这里也可以再info.html中再获取缓存
+    // 加载view
+    index.loadView({
+        menuId: 'userInfo',
+        menuPath: 'user/info?id='+userId,
+        menuName: '用户详情'
+    });
+});
+
+
+// 不用缓存传递参数
+Q.reg('userInfo', function (userId) {
+    console.log(userId);
+    index.loadView({
+        menuId: 'userInfo',
+        menuPath: 'user/info?id='+userId,
+        menuName: '用户详情'
+    });
+});
+```
+html中跳转：
+```html
+<!-- 无参数 -->
+<a href="#!userInfo">个人信息</a>
+
+<!-- 有参数 -->
+<a href="#!userInfo/1">个人信息</a>
+```
+js中跳转：
+```javascript
+// 路由跳转，缓存传递参数
+admin.putTempData('userId', '1');
+Q.go('myInfo');
+
+// 路由传递参数
+Q.go('myInfo/1');
+```
+
+<br>
+
+##### 3.8.1.2.第二种方式：添加隐藏的侧边菜单
 &emsp;在分离版本中，你只需要在config.js的menus数组中添加一个隐藏的菜单：
 ```javascript
 menus: [{
@@ -1022,23 +1094,26 @@ js中跳转：
 Q.go('myInfo');
 ```
 
-> 或许你已经注意到了，这种方式跳转的界面是一个固定页面，如果我们想要传递一些参数，
-> 它就无法满足，所以有了第二种实现方式。
+> 如何传递参数： 使用缓存传递参数，参考admin.putTempData介绍。
 
+<br>
 
-**第二种实现方式：**<br>
+##### 3.8.1.3.第三种方式：用index.openNewTab
 ```javascript
-layui.use(['index'], function () {
+layui.use(['index', 'admin'], function () {
     var index = layui.index;
+    var admin = layui.admin;
     
-    // 不分离用后台地址
+    admin.putTempData('userId', '1');    // 用缓存传递参数
+    
+    // 不分离版本用后台地址
     index.openNewTab({
         title:'个人信息', 
-        url:'system/user/myInfo?userId=1',
+        url:'system/user',
         menuId: 'myInfo'
     });
     
-    // 分离用html页面
+    // 分离版本用html页面
     index.openNewTab({
         title: '个人信息', 
         url: 'components/system/myInfo.html',
@@ -1049,16 +1124,21 @@ layui.use(['index'], function () {
 });
 ```
 
-- `title` 如果开启了多标签，title是选项卡的标题
+- `title` 如果开启了选项卡功能，title是选项卡的标题
 - `url` 打开的页面地址
-- `menuId` 这个参数是一个id标识，如果id一样就只会存在一个tab，也就是说打开一次没有关闭就不会再打开新的页面，
-    比如用户详情页面，如果你想userA的详情和userB的详情是两个页面，可以同时存在选项卡中，menuId就不要写一样的。
+- `menuId` 这是一个id标识，如果id一样就只会存在一个tab，也就是说打开一次没有关闭就不会再打开新的tab。
 
 
-> 注意：<br>
-> 分离版本两种方式都可以用，不分离版本只能用第二种方式，再分离版本中不能使用`?`问号传递参数，建议使用
-> 临时缓存的方式传递参数。
+> 如何传递参数：使用临时缓存的方式传递参数。
 
+<br>
+
+**三种方式如何选择：**
+
+&emsp;&emsp;建议采用第一种方式自己手动注册路由，因为可以选中带参数的注册路由的方式，可以不用缓存的方式传递参数，第二种方式
+和第三种方式都是框架采用关键字key的模式注册路由，只能用缓存传递参数，并且第三种方式是每次都重新Q.reg注册路由，很不优雅。
+
+<br>
 
 请到`3.5.1`和`3.5.2`章节查看跟这个使用场景相关的其他功能方法。
 

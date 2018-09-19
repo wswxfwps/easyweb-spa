@@ -8,6 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../assets/libs/layui/css/layui.css"/>
     <style>
+        .wrapper {
+            margin: 0 auto;
+            max-width: 580px;
+            padding: 0px 20px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 30px;
+        }
+
         .layui-form-pane .layui-form-label {
             width: 210px;
         }
@@ -16,21 +28,34 @@
             margin-left: 210px;
         }
 
-        .color-demo {
-            height: 25px;
-            width: 25px;
-            border: 1px solid #e6e6e6;
-            float: right;
-            margin-top: -32px;
-            margin-right: 6px;
-            background-color: #FBFBFB;
+        .colorPicker {
+            position: absolute;
+            right: 0;
+            top: 0;
+            margin: 0 !important;
         }
 
+        .operBtnGroup {
+            display: block;
+            text-align: right;
+        }
+
+        .operBtnGroup .layui-btn {
+            width: 50%;
+        }
+
+        /** canvas样式 */
+        .pre-canvas {
+            background: #F2F2F2;
+            border: 1px solid #f2f2f2;
+        }
+
+        /* 底部样式 */
         .login-footer {
             text-align: center;
             line-height: 30px;
             padding-bottom: 20px;
-            margin-top: 40px;
+            margin-top: 80px;
         }
 
         .login-footer span {
@@ -48,79 +73,105 @@
 </head>
 
 <body>
-<div style="margin: 0 auto; max-width: 800px;padding: 20px;">
-    <h2 style="text-align: center;margin-bottom: 25px;margin-top: 30px;">EasyWeb主题生成器</h2>
-    <div class="layui-form" style="margin-bottom: 15px;text-align: right">
-        <div class="layui-inline">
-            <label class="layui-form-label">验证颜色：</label>
-            <div class="layui-input-inline" id="yxys">
-                <input type="checkbox" name="yyy" lay-skin="switch" lay-text="ON|OFF" lay-filter="ck-yz" checked>
-            </div>
-        </div>
-    </div>
+<div class="wrapper">
+
+    <h2 class="form-title">EasyWeb主题生成器</h2>
+
+    <!-- 表单 -->
     <div class="layui-form layui-form-pane">
+
         <div class="layui-form-item">
             <label class="layui-form-label">logo背景颜色</label>
             <div class="layui-input-block">
-                <input name="logo" class="layui-input" type="text" value="#002140" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="logo" class="layui-input" type="text" value="#002140" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker1"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">logo文字颜色</label>
             <div class="layui-input-block">
-                <input name="logo_font" class="layui-input" value="#eee" type="text" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="logo_font" class="layui-input" value="#eee" type="text" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker2"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">header背景颜色</label>
             <div class="layui-input-block">
-                <input name="header" class="layui-input" type="text" value="#fff" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="header" class="layui-input" type="text" value="#fff" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker3"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">header字体颜色</label>
             <div class="layui-input-block">
-                <input name="header_font" class="layui-input" value="#333" type="text" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="header_font" class="layui-input" value="#333" type="text" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker4"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">侧边栏背景颜色</label>
             <div class="layui-input-block">
-                <input name="side" class="layui-input" type="text" value="#001529" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="side" class="layui-input" type="text" value="#001529" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker5"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">全局主题颜色(按钮等)</label>
             <div class="layui-input-block">
-                <input name="primary" class="layui-input" type="text" value="#009688" lay-verify="required">
-                <div class="color-demo"></div>
+                <input name="primary" class="layui-input" type="text" value="#009688" lay-verify="required" disabled/>
+                <div class="colorPicker" id="colorPicker6"></div>
             </div>
         </div>
-        <div class="layui-form-item">
-            <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="form-sub"><i
-                    class="layui-icon layui-icon-engine"></i> 生成
+
+        <div class="layui-form-item layui-btn-group operBtnGroup">
+            <button class="layui-btn" id="btn-down">
+                <i class="layui-icon layui-icon-download-circle"></i> 下载
+            </button>
+            <button class="layui-btn" lay-submit lay-filter="form-sub">
+                <i class="layui-icon layui-icon-engine"></i> 生成
             </button>
         </div>
-        <div class="layui-form-item">
-            <button class="layui-btn layui-btn-fluid" id="btn-down"><i
-                    class="layui-icon layui-icon-download-circle"></i> 下载
-            </button>
+
+    </div>
+
+    <!-- 选项卡 -->
+    <div class="layui-tab layui-tab-brief">
+
+        <ul class="layui-tab-title">
+            <li class="layui-this">效果预览</li>
+            <li>查看css结果</li>
+            <li>使用方法</li>
+        </ul>
+
+        <div class="layui-tab-content">
+
+            <div class="layui-tab-item layui-show">
+                <br>
+                <p>预览图：</p>
+                <br>
+                <canvas id="preCanvas1" width="320" height="200" class="pre-canvas"></canvas>
+                <br><br>
+                <p>预览图(小)：</p>
+                <br>
+                <canvas id="preCanvas2" width="80" height="50" class="pre-canvas"></canvas>
+            </div>
+
+            <div class="layui-tab-item">
+                <pre class="layui-code" id="tv-rs" lay-title="theme.css"></pre>
+            </div>
+
+            <div class="layui-tab-item">
+                <p style="margin-top: 30px;">将下载好的css放在项目里面，然后打开html页面，引入下载的css即可生效：</p>
+                <pre class="layui-code" id="tv-jc" lay-title="index.html" lay-encode="true"></pre>
+            </div>
+
         </div>
     </div>
-    <hr>
-    <h2 style="margin-top: 20px;margin-bottom: 15px;">生成结果</h2>
-    <pre class="layui-code" id="tv-rs" lay-title="theme.css"></pre>
-
-    <hr>
-
-    <h2 style="margin-top: 20px;margin-bottom: 15px;">使用方法</h2>
-    <p>将下载好的css放在项目里面，然后打开index.html，引入下载的css即可生效，如果样式有生成的不全的，请联系作者增加：</p>
-    <pre class="layui-code" id="tv-jc" lay-title="index.html" lay-encode="true"></pre>
 
     <div class="login-footer">
         <p>© 2018 <a href="javascript:;" target="_blank">EasyWeb版权所有</a></p>
@@ -132,76 +183,156 @@
     </div>
 </div>
 
-<script type="text/javascript" src="../assets/libs/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../assets/libs/layui/layui.js"></script>
 <script type="text/javascript" src="FileSaver.min.js"></script>
 
 <script>
-    layui.use(['element', 'form', 'code', 'util', 'layer'], function () {
+    layui.use(['layer', 'element', 'form', 'code', 'util', 'colorpicker'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
         var element = layui.element;
         var form = layui.form;
+        var code = layui.code;
         var util = layui.util;
-        var layer = layui.layer;
+        var colorpicker = layui.colorpicker;
+
         var isVer = true;
 
-        $('#tv-jc').text('<link rel="stylesheet" href="assets/css/admin.css"/>\n' +
-            '<!-- 引入下载的css，放在admin.css之后，建议放在所有css之后 -->\n' +
-            '<link rel="stylesheet" href="assets/css/theme.css"/>');
+        // 使用说明
+        var jcStr = '<link rel="stylesheet" href="assets/css/admin.css"/>\n';
+        jcStr += '<!-- 引入下载的css，放在admin.css之后，建议放在所有css之后 -->\n';
+        jcStr += '<link rel="stylesheet" href="assets/css/theme.css"/>';
+        $('#tv-jc').text(jcStr);
+
+        // 初始化code模块
         layui.code({about: false});
+
         $('#btn-down').hide();
 
+        // 生成css
         var tpl;
-
         form.on('submit(form-sub)', function (data) {
             for (var key in data.field) {
                 var colorValue = data.field[key];
-                if (!isVer || /^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
-                    tpl = tpl.replace(new RegExp('{{' + key + '}}', 'gm'), colorValue);
-                    layer.msg('生成完成', {icon: 6});
-                    $('#btn-down').show();
-                } else {
-                    layer.msg(key + '颜色值输入错误', {icon: 5});
-                    return false;
-                }
+                tpl = tpl.replace(new RegExp('{{' + key + '}}', 'gm'), colorValue);
             }
             $('#tv-rs').text(tpl);
+            $('#btn-down').show();
             layui.code({elem: '#tv-rs', about: false});
+            layer.msg('生成完成', {icon: 6});
         });
 
+        // 加载css模板
         layer.load(2);
         $.get('theme.tpl', function (data) {
             tpl = data;
             layer.closeAll('loading');
         });
 
-        $(".layui-form input[type='text']").on('input', function () {
-            var colorValue = $(this).val();
-            if (!isVer || /^#[0-9a-fA-F]{3,6}$/.test(colorValue)) {
-                $(this).parent().find('.color-demo').css('background-color', colorValue);
-            } else {
-                $(this).parent().find('.color-demo').css('background-color', '#FBFBFB');
-            }
-        });
+        // 初始化颜色选择器
+        for (var i = 1; i < 7; i++) {
+            var elemId = '#colorPicker' + i;
+            var color = $(elemId).prev().val();
+            colorpicker.render({
+                elem: elemId,
+                color: color,
+                format: 'rgb',
+                predefine: true,
+                alpha: true,
+                done: function (color) {
+                    var elem = $(this)[0].elem;
+                    $(elem).prev().val(color);
+                },
+                change: function (color) {
+                    var elem = $(this)[0].elem;
+                    $(elem).prev().val(color);
+                    drawPreview();
+                }
+            });
+        }
 
+        // 下载css文件
         $('#btn-down').click(function () {
             var file = new File([tpl], "theme.css", {type: "text/plain;charset=utf-8"});
             saveAs(file);
         });
 
-        $(".layui-form input[type='text']").trigger('input');
-
         //固定Bar
         util.fixbar({bgcolor: '#009688'});
 
-        form.on('switch(ck-yz)', function (data) {
-            isVer = data.elem.checked;
-        });
+        // 绘制预览图
+        function drawPreview() {
+            var logoColor = $('input[name=logo]').val();
+            var logoTvColor = $('input[name=logo_font]').val();
+            var sideColor = $('input[name=side]').val();
+            var headerColor = $('input[name=header]').val();
+            var headerTvColor = $('input[name=header_font]').val();
+            var primaryColor = $('input[name=primary]').val();
 
-        $('#yxys').hover(function () {
-            layer.tips('目前只校验16进制颜色值，如需rgb颜色，请关闭校验！', this, {tips: [1, '#344058']});
-        }, function () {
-            layer.closeAll('tips');
-        });
+            var canvas1 = document.getElementById("preCanvas1");
+            var cxt1 = canvas1.getContext("2d");
+            cxt1.clearRect(0, 0, canvas1.width, canvas1.height); // 重新绘制
+            // 绘制logo
+            cxt1.fillStyle = logoColor;
+            cxt1.beginPath();
+            cxt1.fillRect(0, 0, 80, 30);
+            cxt1.closePath();
+            cxt1.fill();
+            // 绘制logo文字
+            cxt1.font = "12px Arial";
+            cxt1.fillStyle = logoTvColor;
+            cxt1.fillText("easyweb", 16, 18);
+            // 绘制side
+            cxt1.fillStyle = sideColor;
+            cxt1.beginPath();
+            cxt1.fillRect(0, 30, 80, 170);
+            cxt1.closePath();
+            cxt1.fill();
+            // 绘制header
+            cxt1.fillStyle = headerColor;
+            cxt1.beginPath();
+            cxt1.fillRect(80, 0, 240, 30);
+            cxt1.closePath();
+            cxt1.fill();
+            // 绘制header文字
+            cxt1.fillStyle = headerTvColor;
+            cxt1.fillText("header", 270, 18);
+            // 绘制按钮
+            cxt1.fillStyle = primaryColor;
+            cxt1.beginPath();
+            cxt1.fillRect(180, 95, 40, 20);
+            cxt1.closePath();
+            cxt1.fill();
+            // 绘制按钮文字
+            cxt1.font = "11px Arial";
+            cxt1.fillStyle = '#fff';
+            cxt1.fillText("button", 185, 108);
+
+            //
+            var canvas2 = document.getElementById("preCanvas2");
+            var cxt2 = canvas2.getContext("2d");
+            cxt2.clearRect(0, 0, canvas2.width, canvas2.height); // 重新绘制
+            // 绘制logo
+            cxt2.fillStyle = logoColor;
+            cxt2.beginPath();
+            cxt2.fillRect(0, 0, 20, 10);
+            cxt2.closePath();
+            cxt2.fill();
+            // 绘制side
+            cxt2.fillStyle = sideColor;
+            cxt2.beginPath();
+            cxt2.fillRect(0, 10, 20, 40);
+            cxt2.closePath();
+            cxt2.fill();
+            // 绘制header
+            cxt2.fillStyle = headerColor;
+            cxt2.beginPath();
+            cxt2.fillRect(20, 0, 60, 10);
+            cxt2.closePath();
+            cxt2.fill();
+        }
+
+        drawPreview();
     });
 </script>
 </body>

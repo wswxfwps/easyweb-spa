@@ -1163,17 +1163,6 @@ layui.use(['index', 'admin'], function () {
 
 
 
-### 3.11.不分离版本
-
-注意：
-
-&emsp;&emsp;你从EasyWebPage这个地址下载下来的项目是前后端分离版本的，如果你需要前后端不分离版本的页面和后台，
-请从[easyweb-shiro](https://gitee.com/whvse/easyweb-shiro)下载。 easyweb-shiro是Java语言开发的，如果你是
-php或其他后台语言，想要使用不分离版的页面，请联系作者辅助你结合到你的项目中，因为不分离版本页面跟后台耦合比较大，
-分离出静态页面意义不大，所以不分离版本作者就没有独立再维护成纯静态页面了。
-
-
-
 ### 3.12.树形表格treeTable
 
 在layui的数据表格上进行扩展实现的。

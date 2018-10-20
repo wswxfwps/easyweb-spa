@@ -5,17 +5,8 @@
 
 > 基于jquery、layui的管理系统模板，单页面、响应式、支持mvvm、极易上手！
 
-* 演示地址：[https://whvse.gitee.io/easywebpage/](https://whvse.gitee.io/easywebpage/login.html)
+* 演示地址：[https://demo.easyweb.vip/](https://demo.easyweb.vip/iframe/)
 * 演示账号：随便输 &emsp;&emsp; 密码：随便输 
-
-&emsp;EasyWeb包含前后台，
-[前台地址](https://gitee.com/whvse/EasyWebPage)，
-[分离版后台地址](https://gitee.com/whvse/EasyWeb)，
-[不分离版后台地址](https://gitee.com/whvse/easyweb-shiro)，
-后台基于springboot、mybatis、mybatis-plus、Security、OAuth2等，不分离版权限使用shiro。 
-
-&emsp;此文档包含分离和不分离版本的前端开发指南，两者的使用是有些区别的，
-不同的地方在文档中都着重指明了，参考文档使用即可。
 
 ### 1.1.使用框架 
 

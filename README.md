@@ -5,13 +5,8 @@
 
 > 基于jquery、layui的管理系统模板，单页面、响应式、支持mvvm、极易上手！
 
-* 演示地址：[https://whvse.gitee.io/easywebpage/](https://whvse.gitee.io/easywebpage/login.html)
+* 演示地址：[https://demo.easyweb.vip/](https://demo.easyweb.vip/iframe/)
 
-* 演示账号：随便输 &emsp;&emsp; 密码：随便输 
-
-* 开发文档：[https://whvse.gitee.io/easywebpage/docs/](https://whvse.gitee.io/easywebpage/docs/)
-
-* [EasyWeb后台](https://gitee.com/whvse/EasyWeb)，后台基于springboot、Security、OAuth2等。
 
 ## 使用框架 
 

@@ -1157,7 +1157,7 @@ layui.use(['index', 'admin'], function () {
 
 ### 3.10.主题功能
 &emsp;&emsp;EasyWeb包含前后台，所以开发时间比较紧张，暂时只提供了两套主题，但是提供了一个主题生成器，
-请使用主题生成器定制化你的样式：[EasyWeb主题生成器](https://whvse.gitee.io/easywebpage/docs/generater_theme.html)。
+请使用主题生成器定制化你的样式：[EasyWeb主题生成器](https://demo.easyweb.vip/theme/)。
 
 &emsp;EasyWeb的主题生成器可以深度定制主题，样式深度到按钮、单选框、下拉框、选项卡等样式。
 

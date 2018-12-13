@@ -50,7 +50,7 @@ layui.define(['config', 'admin', 'layer', 'laytpl', 'element', 'form'], function
                 for (var j = tempMenu.subMenus.length - 1; j >= 0; j--) {
                     var jMenus = tempMenu.subMenus[j];
                     if (jMenus.subMenus && jMenus.subMenus.length <= 0) {
-                        tempMenu.splice(j, 1);
+                        tempMenu.subMenus.splice(j, 1);
                         continue;
                     }
                 }
